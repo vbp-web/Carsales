@@ -207,7 +207,7 @@ class DatabaseStore {
           productId: 'prod_creta_7d_mats',
           name: 'AutoApex 7D Laser-Cut All-Weather Floor Mats for Hyundai Creta',
           sku: 'APX-FM-CRT-7D-01',
-          image: '/src/assets/images/product_floor_mats_1790681468276.jpg',
+          image: 'https://ik.imagekit.io/kn7nmib7f/car/product_floor_mats_1790681468276.jpg',
           price: 4999,
           quantity: 1,
           vehicleCompatibility: 'Hyundai Creta 2024'
@@ -372,7 +372,7 @@ class DatabaseStore {
           productId: 'prod_creta_7d_mats',
           name: 'AutoApex 7D Laser-Cut All-Weather Floor Mats for Hyundai Creta',
           sku: 'APX-FM-CRT-7D-01',
-          image: '/src/assets/images/product_floor_mats_1790681468276.jpg',
+          image: 'https://ik.imagekit.io/kn7nmib7f/car/product_floor_mats_1790681468276.jpg',
           price: 4999,
           quantity: 1,
           vehicleCompatibility: 'Hyundai Creta 2024'

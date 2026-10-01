@@ -34,7 +34,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
   const [loading, setLoading] = useState(true);
   const [newsletterEmail, setNewsletterEmail] = useState('');
 
-  const heroImage = '/src/assets/images/hero_automotive_accessories_1790681434171.jpg';
+  const heroImage = 'https://ik.imagekit.io/kn7nmib7f/car/hero_automotive_accessories_1790681434171.jpg';
 
   useEffect(() => {
     async function loadHomeData() {

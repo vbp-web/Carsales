@@ -119,10 +119,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout, onNavigateCa
                   className="flex gap-3 p-3 bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-850 rounded-xl hover:border-zinc-300 dark:hover:border-zinc-800 transition-colors shadow-sm"
                 >
                   <img
-                    src={item.product?.thumbnail || item.product?.images?.[0] || '/src/assets/images/product_floor_mats_1790681468276.jpg'}
+                    src={item.product?.thumbnail || item.product?.images?.[0] || 'https://ik.imagekit.io/kn7nmib7f/car/product_floor_mats_1790681468276.jpg'}
                     alt={item.product?.name || 'Accessory'}
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/src/assets/images/product_floor_mats_1790681468276.jpg';
+                      (e.target as HTMLImageElement).src = 'https://ik.imagekit.io/kn7nmib7f/car/product_floor_mats_1790681468276.jpg';
                     }}
                     className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover bg-zinc-100 dark:bg-zinc-950 shrink-0 border border-zinc-200 dark:border-zinc-800"
                   />

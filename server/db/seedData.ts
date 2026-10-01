@@ -123,12 +123,12 @@ export const SEED_CATEGORIES: Category[] = [
   }
 ];
 
-// Seed images generated in the studio
-const IMG_HERO = '/src/assets/images/hero_automotive_accessories_1790681434171.jpg';
-const IMG_SEAT_COVERS = '/src/assets/images/product_seat_covers_1790681447989.jpg';
-const IMG_FLOOR_MATS = '/src/assets/images/product_floor_mats_1790681468276.jpg';
-const IMG_DASH_CAM = '/src/assets/images/product_dash_camera_1790681481810.jpg';
-const IMG_SPOILER = '/src/assets/images/product_spoiler_exterior_1790681500554.jpg';
+// Seed images from ImageKit CDN
+const IMG_HERO = 'https://ik.imagekit.io/kn7nmib7f/car/hero_automotive_accessories_1790681434171.jpg';
+const IMG_SEAT_COVERS = 'https://ik.imagekit.io/kn7nmib7f/car/product_seat_covers_1790681447989.jpg';
+const IMG_FLOOR_MATS = 'https://ik.imagekit.io/kn7nmib7f/car/product_floor_mats_1790681468276.jpg';
+const IMG_DASH_CAM = 'https://ik.imagekit.io/kn7nmib7f/car/product_dash_camera_1790681481810.jpg';
+const IMG_SPOILER = 'https://ik.imagekit.io/kn7nmib7f/car/product_spoiler_exterior_1790681500554.jpg';
 
 export const SEED_PRODUCTS: Product[] = [
   // 1
