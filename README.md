@@ -1,109 +1,181 @@
-# AutoApex — Automotive Parts & Accessories E-Commerce Platform
+# Carsales (AutoApex) — Automotive Accessories & Fitment Platform
 
-A production-grade, full-stack automotive e-commerce platform built with React 19, TypeScript, Tailwind CSS, Express, and Vite. Features vehicle fitment filtering, real-time shipment tracking, GST-compliant PDF invoice downloads, intelligent AI recommendations, and an administrative control panel.
+[![Vite](https://img.shields.io/badge/Vite-6.x-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![React](https://img.shields.io/badge/React-19.x-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Express.js](https://img.shields.io/badge/Express-4.x-000000?logo=express&logoColor=white)](https://expressjs.com/)
+[![MongoDB Atlas](https://img.shields.io/badge/MongoDB_Atlas-Mongoose_8-47A248?logo=mongodb&logoColor=white)](https://www.mongodb.com/atlas)
+[![GitHub](https://img.shields.io/badge/GitHub-Carsales-181717?logo=github&logoColor=white)](https://github.com/vbp-web/Carsales)
 
----
-
-## 🚀 Quick Deployment Guide
-
-### Step 1: Upload to GitHub
-
-1. **Create a new repository on GitHub**:
-   - Go to [github.com/new](https://github.com/new)
-   - Name your repository (e.g., `autoapex-ecommerce`)
-   - Choose **Public** or **Private**
-   - **Do NOT** initialize with a README, .gitignore, or license (these are already configured in this repo)
-   - Click **Create repository**
-
-2. **Connect and push your code**:
-   Open your terminal in this project directory and run:
-   ```bash
-   # Add your GitHub repository as the origin remote
-   git remote add origin https://github.com/<YOUR_GITHUB_USERNAME>/autoapex-ecommerce.git
-
-   # Push the main branch
-   git push -u origin main
-   ```
-
-*(Tip: If you use the GitHub CLI, you can simply run `gh repo create autoapex-ecommerce --public --source=. --remote=origin --push`)*
+**Carsales (AutoApex)** is a full-stack automotive e-commerce platform engineered for precision aftermarket car accessories and vehicle upgrades. It provides certified vehicle compatibility filtering, real-time GPS shipment tracking, simulated Razorpay payment flows, GST-compliant PDF invoice generation, and an administrator control room.
 
 ---
 
-### Step 2: Deploy to Vercel
+## 📸 Key Platform Features
 
-1. Go to [vercel.com](https://vercel.com) and log in.
-2. Click **Add New...** → **Project**.
-3. Import your newly created GitHub repository (`autoapex-ecommerce`).
-4. **Project Settings** on Vercel will automatically detect the configuration from `vercel.json`:
-   - **Framework Preset**: Vite
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-5. **Environment Variables**:
-   - `MONGODB_URI`: Your MongoDB Atlas connection string (see Step 3 below).
-   - `JWT_SECRET`: Any secure random string (e.g. `apex_prod_jwt_secret_2026`).
-6. Click **Deploy**.
-
-Your app and serverless API endpoints will be live with full routing and SSL!
+- **Precision Vehicle Fitment Engine**: Filter thousands of accessories by Year, Brand, and Model (Hyundai Creta, Tata Nexon, Mahindra Thar, Toyota Fortuner, etc.) with verified laser-mold fitment badges.
+- **Real-Time GPS Tracking Rail**: 7-stage interactive milestone rail (`PLACED` &rarr; `CONFIRMED` &rarr; `PROCESSING` &rarr; `PACKED` &rarr; `SHIPPED` &rarr; `OUT_FOR_DELIVERY` &rarr; `DELIVERED`) with live hub location and delivery associate contact details.
+- **Razorpay Payment Gateway Integration**: Secure checkout modal supporting simulated UPI / QR (Google Pay, PhonePe, Paytm), Credit/Debit Cards, and Net Banking with server-side signature validation.
+- **GST Tax Invoice Generator**: Automatic, downloadable PDF invoices with HSN codes, IGST/CGST breakdowns, delivery address, and carrier AWB details via `jsPDF`.
+- **Admin Control Room**: Real-time sales telemetry, low-stock threshold triggers, order status progression, coupon creator, and customer review moderation.
+- **Multi-Device Responsive**: Optimized for all viewports from compact mobile devices (360px+) to tablets and ultra-wide desktop monitors.
+- **MongoDB Atlas + Mongoose 8**: Cloud persistence with automatic schema initialization, fallback in-memory store, and catalog seeding.
+- **ImageKit CDN**: Automotive photography served via high-performance cloud CDN.
 
 ---
 
-### Step 3: Connect MongoDB Atlas (Database)
+## 🔐 Pre-Seeded Demo Credentials
 
-AutoApex includes full, native support for **MongoDB Atlas** with Mongoose 8. It also has a built-in hybrid mode that runs a resilient local store until your MongoDB Atlas cluster is connected.
+Use these verified credentials to sign in and test the platform:
 
-#### Setting up MongoDB Atlas:
-1. **Create Free Database**:
-   - Visit [mongodb.com/atlas](https://www.mongodb.com/atlas) and register or sign in.
-   - Deploy a free **M0 (Shared Cluster)** (e.g., AWS / Mumbai or Frankfurt region).
-2. **Configure Network Access**:
-   - In Atlas left sidebar, go to **Network Access** &rarr; **Add IP Address**.
-   - Select **Allow Access from Anywhere** (`0.0.0.0/0`) so Vercel Serverless Functions can connect without IP restrictions.
-3. **Create Database User**:
-   - In Atlas left sidebar, go to **Database Access** &rarr; **Add New Database User**.
-   - Set Authentication Method to **Password** (e.g., username `admin`, and create a secure password).
-   - Assign **Read and write to any database** privileges.
-4. **Obtain Connection String**:
-   - Under **Clusters**, click **Connect** &rarr; **Drivers** (Node.js).
-   - Copy the connection URI:
-     ```
-     mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/autoapex?retryWrites=true&w=majority
-     ```
-   - Replace `<username>` and `<password>` with the credentials you just created.
-5. **Add to Vercel / Local `.env`**:
-   - In Vercel: Go to your project &rarr; **Settings** &rarr; **Environment Variables** &rarr; Add:
-     - **Key**: `MONGODB_URI`
-     - **Value**: Your connection string
-   - Locally: Add `MONGODB_URI="..."` to your `.env` file.
-
-#### ✨ Automatic Database Initialization & Seeding:
-When AutoApex connects to your MongoDB Atlas cluster for the first time:
-- It automatically creates all necessary Mongoose collections (`users`, `products`, `orders`, `categories`, `carbrands`, `carmodels`, `coupons`, `reviews`).
-- If empty, it automatically seeds 20+ vehicle catalog parts, demo customer and admin accounts, coupon codes, and vehicle fitment rules into Atlas!
+| Role | Email | Password | Permissions |
+| :--- | :--- | :--- | :--- |
+| **Customer** | `customer@example.com` | `customer123` | Vehicle Garage, Order Tracking, Wishlist, Checkout |
+| **Administrator** | `admin@example.com` | `admin123` | Full Admin Console, Inventory Control, Order Status |
 
 ---
 
-## 🛠 Local Development
+## 🗂 Project Architecture
 
-```bash
-# Install dependencies
-npm install
-
-# Start the full-stack development server (Express + Vite)
-npm run dev
-
-# Build for production
-npm run build
-
-# Type check
-npm run lint
+```
+auto-main/
+├── api/                       # Vercel serverless entrypoint
+│   └── index.ts               # Serverless Express handler
+├── server/                    # Backend API and Database
+│   ├── db/
+│   │   ├── connection.ts      # MongoDB Atlas connection lifecycle
+│   │   ├── models.ts          # Mongoose 8 schemas (User, Product, Order, etc.)
+│   │   ├── seedData.ts        # Seed dataset (products, cars, coupons, users)
+│   │   └── store.ts           # Hybrid data access layer (Atlas + in-memory fallback)
+│   ├── routes/                # Express API routes (/auth, /products, /orders, /admin)
+│   └── server.ts              # Unified dev server with Vite middleware
+├── src/                       # Frontend React Application
+│   ├── components/
+│   │   ├── auth/              # AuthModal (Sign In / Registration)
+│   │   ├── cart/              # CartDrawer (Slide-out bag with threshold bar)
+│   │   ├── checkout/          # RazorpayModal (UPI, Cards, Net Banking)
+│   │   ├── common/            # Navbar, Footer, ProductCard, CarSelector, VehicleModal
+│   │   └── orders/            # OrderTrackingProgressBar (7-milestone rail)
+│   ├── context/               # React Context (Auth, Cart, Wishlist, Vehicle, Theme, Toast)
+│   ├── services/              # API client service layer
+│   ├── utils/                 # PDF invoice generation (jsPDF)
+│   ├── views/                 # Top-level views (Home, Catalog, ProductDetail, Checkout, Admin, Orders)
+│   ├── App.tsx                # Dynamic view router and root container
+│   ├── main.tsx               # Client entry point
+│   └── index.css              # Tailwind CSS v4 styling rules
+├── scripts/
+│   └── verifyAndSeed.ts       # Standalone verification and seeding CLI script
+├── vercel.json                # Vercel serverless routing configuration
+├── vite.config.ts             # Vite build configuration
+└── package.json               # Dependencies and scripts
 ```
 
-Server runs on `http://localhost:3000`.
+---
+
+## ⚙️ Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+# Server Port
+PORT=3000
+
+# MongoDB Atlas Connection URI
+MONGODB_URI="mongodb+srv://<username>:<password>@<cluster>.mongodb.net/autoapex?retryWrites=true&w=majority"
+
+# JWT Secret for Session Tokens
+JWT_SECRET="apex_super_secret_jwt_key_2026"
+```
+
+> **Note**: The `.env` file contains sensitive credentials and is excluded from Git via `.gitignore`.
 
 ---
 
-## 📦 Tech Stack
-- **Frontend**: React 19, TypeScript, Tailwind CSS v4, Lucide React, Motion
-- **Backend / API**: Express.js, JWT, bcryptjs, Vercel Serverless (`/api`)
-- **PDF Generation**: jsPDF (GST invoices, itemized tax breakdowns, automated pagination)
-- **Deployment**: Vercel & GitHub Actions ready
+## 🚀 Getting Started Locally
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/vbp-web/Carsales.git
+cd Carsales
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Verify & Seed MongoDB Atlas (Optional)
+
+```bash
+npm run seed
+```
+
+### 4. Start Development Server
+
+```bash
+npm run dev
+```
+
+The unified development server will launch at:
+**`http://localhost:3000`**
+
+### 5. Type-Check and Build
+
+```bash
+# Type check (TypeScript)
+npm run lint
+
+# Production build (Frontend + Serverless)
+npm run build
+```
+
+---
+
+## ☁️ Deployment Guide
+
+### Deploying to Vercel
+
+1. **Push to GitHub**:
+   Ensure your code is committed and pushed to [https://github.com/vbp-web/Carsales](https://github.com/vbp-web/Carsales).
+
+2. **Import into Vercel**:
+   - Navigate to [vercel.com](https://vercel.com) and log in.
+   - Click **Add New...** &rarr; **Project**.
+   - Select the `Carsales` repository.
+
+3. **Configure Environment Variables on Vercel**:
+   Under **Settings &rarr; Environment Variables**, add:
+   - `MONGODB_URI`: Your MongoDB Atlas connection string.
+   - `JWT_SECRET`: A secure string for signing tokens.
+
+4. **Deploy**:
+   - Framework Preset: **Vite**
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+   - Click **Deploy**.
+
+Vercel will build the frontend assets into `/dist` and route `/api/*` requests through the serverless function in `/api/index.ts`.
+
+---
+
+## 🛠 Tech Stack Details
+
+| Technology | Purpose |
+| :--- | :--- |
+| **React 19** | Modern UI components with hooks and context |
+| **Vite** | Fast HMR development server and production bundler |
+| **TypeScript** | Strict compile-time typing across frontend and backend |
+| **Tailwind CSS v4** | Utility-first styling with responsive breakpoint grids |
+| **Express.js** | RESTful routing, authentication middleware, and dev server |
+| **MongoDB Atlas / Mongoose 8** | Cloud NoSQL persistence with resilient fallback |
+| **jsPDF** | Client-side GST tax invoice creation and formatting |
+| **Lucide Icons** | Consistent iconography across views and tracking steps |
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
