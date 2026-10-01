@@ -1,0 +1,6 @@
+{
+  "name": "AutoApex – Premium Automotive Accessories & Fitment Platform",
+  "description": "Production automotive e-commerce platform featuring precision car compatibility matching, custom accessories, secure checkout, order tracking, and intelligent vehicle recommendations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

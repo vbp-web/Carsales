@@ -1,0 +1,1289 @@
+import bcrypt from 'bcryptjs';
+import {
+  CarBrand,
+  CarModel,
+  Category,
+  Product,
+  Coupon,
+  User,
+  Review
+} from '../types/index.ts';
+
+export const SEED_BRANDS: CarBrand[] = [
+  { id: 'brand_hyundai', name: 'Hyundai', country: 'South Korea', modelsCount: 6 },
+  { id: 'brand_tata', name: 'Tata Motors', country: 'India', modelsCount: 5 },
+  { id: 'brand_mahindra', name: 'Mahindra', country: 'India', modelsCount: 4 },
+  { id: 'brand_toyota', name: 'Toyota', country: 'Japan', modelsCount: 4 },
+  { id: 'brand_honda', name: 'Honda', country: 'Japan', modelsCount: 3 },
+  { id: 'brand_maruti', name: 'Maruti Suzuki', country: 'India / Japan', modelsCount: 5 },
+  { id: 'brand_kia', name: 'Kia', country: 'South Korea', modelsCount: 4 },
+  { id: 'brand_vw', name: 'Volkswagen', country: 'Germany', modelsCount: 3 },
+  { id: 'brand_bmw', name: 'BMW', country: 'Germany', modelsCount: 3 },
+  { id: 'brand_merc', name: 'Mercedes-Benz', country: 'Germany', modelsCount: 3 }
+];
+
+export const SEED_MODELS: CarModel[] = [
+  // Hyundai
+  { id: 'model_creta', brandId: 'brand_hyundai', brandName: 'Hyundai', name: 'Creta', bodyType: 'SUV', years: [2019, 2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_venue', brandId: 'brand_hyundai', brandName: 'Hyundai', name: 'Venue', bodyType: 'SUV', years: [2019, 2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_verna', brandId: 'brand_hyundai', brandName: 'Hyundai', name: 'Verna', bodyType: 'Sedan', years: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_i20', brandId: 'brand_hyundai', brandName: 'Hyundai', name: 'i20', bodyType: 'Hatchback', years: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_alcazar', brandId: 'brand_hyundai', brandName: 'Hyundai', name: 'Alcazar', bodyType: 'SUV', years: [2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_tucson', brandId: 'brand_hyundai', brandName: 'Hyundai', name: 'Tucson', bodyType: 'SUV', years: [2020, 2021, 2022, 2023, 2024, 2025] },
+
+  // Tata
+  { id: 'model_nexon', brandId: 'brand_tata', brandName: 'Tata Motors', name: 'Nexon', bodyType: 'SUV', years: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_harrier', brandId: 'brand_tata', brandName: 'Tata Motors', name: 'Harrier', bodyType: 'SUV', years: [2019, 2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_safari', brandId: 'brand_tata', brandName: 'Tata Motors', name: 'Safari', bodyType: 'SUV', years: [2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_punch', brandId: 'brand_tata', brandName: 'Tata Motors', name: 'Punch', bodyType: 'SUV', years: [2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_altroz', brandId: 'brand_tata', brandName: 'Tata Motors', name: 'Altroz', bodyType: 'Hatchback', years: [2020, 2021, 2022, 2023, 2024, 2025] },
+
+  // Mahindra
+  { id: 'model_thar', brandId: 'brand_mahindra', brandName: 'Mahindra', name: 'Thar', bodyType: 'SUV', years: [2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_scorpio_n', brandId: 'brand_mahindra', brandName: 'Mahindra', name: 'Scorpio-N', bodyType: 'SUV', years: [2022, 2023, 2024, 2025] },
+  { id: 'model_xuv700', brandId: 'brand_mahindra', brandName: 'Mahindra', name: 'XUV700', bodyType: 'SUV', years: [2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_bolero', brandId: 'brand_mahindra', brandName: 'Mahindra', name: 'Bolero Neo', bodyType: 'SUV', years: [2020, 2021, 2022, 2023, 2024, 2025] },
+
+  // Toyota
+  { id: 'model_fortuner', brandId: 'brand_toyota', brandName: 'Toyota', name: 'Fortuner', bodyType: 'SUV', years: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_innova_crysta', brandId: 'brand_toyota', brandName: 'Toyota', name: 'Innova Crysta', bodyType: 'MUV', years: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_hycross', brandId: 'brand_toyota', brandName: 'Toyota', name: 'Innova Hycross', bodyType: 'MUV', years: [2023, 2024, 2025] },
+  { id: 'model_hyryder', brandId: 'brand_toyota', brandName: 'Toyota', name: 'Urban Cruiser Hyryder', bodyType: 'SUV', years: [2022, 2023, 2024, 2025] },
+
+  // Honda
+  { id: 'model_city', brandId: 'brand_honda', brandName: 'Honda', name: 'City', bodyType: 'Sedan', years: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_amaze', brandId: 'brand_honda', brandName: 'Honda', name: 'Amaze', bodyType: 'Sedan', years: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_elevate', brandId: 'brand_honda', brandName: 'Honda', name: 'Elevate', bodyType: 'SUV', years: [2023, 2024, 2025] },
+
+  // Maruti Suzuki
+  { id: 'model_brezza', brandId: 'brand_maruti', brandName: 'Maruti Suzuki', name: 'Brezza', bodyType: 'SUV', years: [2019, 2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_grand_vitara', brandId: 'brand_maruti', brandName: 'Maruti Suzuki', name: 'Grand Vitara', bodyType: 'SUV', years: [2022, 2023, 2024, 2025] },
+  { id: 'model_baleno', brandId: 'brand_maruti', brandName: 'Maruti Suzuki', name: 'Baleno', bodyType: 'Hatchback', years: [2019, 2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_swift', brandId: 'brand_maruti', brandName: 'Maruti Suzuki', name: 'Swift', bodyType: 'Hatchback', years: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_fronx', brandId: 'brand_maruti', brandName: 'Maruti Suzuki', name: 'Fronx', bodyType: 'SUV', years: [2023, 2024, 2025] },
+
+  // Kia
+  { id: 'model_seltos', brandId: 'brand_kia', brandName: 'Kia', name: 'Seltos', bodyType: 'SUV', years: [2019, 2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_sonet', brandId: 'brand_kia', brandName: 'Kia', name: 'Sonet', bodyType: 'SUV', years: [2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_carens', brandId: 'brand_kia', brandName: 'Kia', name: 'Carens', bodyType: 'MUV', years: [2022, 2023, 2024, 2025] },
+  { id: 'model_ev6', brandId: 'brand_kia', brandName: 'Kia', name: 'EV6', bodyType: 'Luxury', years: [2022, 2023, 2024, 2025] },
+
+  // Volkswagen
+  { id: 'model_virtus', brandId: 'brand_vw', brandName: 'Volkswagen', name: 'Virtus', bodyType: 'Sedan', years: [2022, 2023, 2024, 2025] },
+  { id: 'model_taigun', brandId: 'brand_vw', brandName: 'Volkswagen', name: 'Taigun', bodyType: 'SUV', years: [2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_tiguan', brandId: 'brand_vw', brandName: 'Volkswagen', name: 'Tiguan', bodyType: 'SUV', years: [2020, 2021, 2022, 2023, 2024, 2025] },
+
+  // BMW
+  { id: 'model_3_series', brandId: 'brand_bmw', brandName: 'BMW', name: '3 Series Gran Limousine', bodyType: 'Luxury', years: [2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_x1', brandId: 'brand_bmw', brandName: 'BMW', name: 'X1', bodyType: 'Luxury', years: [2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_x5', brandId: 'brand_bmw', brandName: 'BMW', name: 'X5', bodyType: 'Luxury', years: [2019, 2020, 2021, 2022, 2023, 2024, 2025] },
+
+  // Mercedes
+  { id: 'model_c_class', brandId: 'brand_merc', brandName: 'Mercedes-Benz', name: 'C-Class', bodyType: 'Luxury', years: [2020, 2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_gla', brandId: 'brand_merc', brandName: 'Mercedes-Benz', name: 'GLA', bodyType: 'Luxury', years: [2021, 2022, 2023, 2024, 2025] },
+  { id: 'model_gle', brandId: 'brand_merc', brandName: 'Mercedes-Benz', name: 'GLE', bodyType: 'Luxury', years: [2020, 2021, 2022, 2023, 2024, 2025] }
+];
+
+export const SEED_CATEGORIES: Category[] = [
+  {
+    id: 'cat_interior',
+    name: 'Interior',
+    slug: 'interior',
+    description: 'Bespoke seat covers, precision 7D mats, steering grips, and climate sunshades.',
+    iconName: 'Armchair',
+    subcategories: ['Seat Covers', 'Floor Mats', 'Steering Covers', 'Car Organizers', 'Sun Shades', 'Ambient Lighting'],
+    productCount: 16
+  },
+  {
+    id: 'cat_exterior',
+    name: 'Exterior',
+    slug: 'exterior',
+    description: 'Aerodynamic spoilers, weather guards, protective covers, and styling trims.',
+    iconName: 'Shield',
+    subcategories: ['Body Covers', 'Spoilers', 'Door Visors', 'Mud Flaps', 'Chrome Accessories', 'Roof Carriers'],
+    productCount: 14
+  },
+  {
+    id: 'cat_electronics',
+    name: 'Electronics',
+    slug: 'electronics',
+    description: 'Ultra HD 4K dash cams, wireless carplay adapters, TPMS, and audio fidelity.',
+    iconName: 'Cpu',
+    subcategories: ['Dash Cameras', 'LED Lights', 'GPS Trackers', 'Parking Sensors', 'Car Audio', 'Inverters'],
+    productCount: 14
+  },
+  {
+    id: 'cat_carcare',
+    name: 'Car Care',
+    slug: 'car-care',
+    description: 'Ceramic coatings, hydrophobic glass sealants, pH neutral shampoos, and microfibers.',
+    iconName: 'Sparkles',
+    subcategories: ['Car Shampoo', 'Ceramic Polish', 'Cleaning Kits', 'Microfiber Cloth', 'Detailing Products'],
+    productCount: 10
+  }
+];
+
+// Seed images generated in the studio
+const IMG_HERO = '/src/assets/images/hero_automotive_accessories_1790681434171.jpg';
+const IMG_SEAT_COVERS = '/src/assets/images/product_seat_covers_1790681447989.jpg';
+const IMG_FLOOR_MATS = '/src/assets/images/product_floor_mats_1790681468276.jpg';
+const IMG_DASH_CAM = '/src/assets/images/product_dash_camera_1790681481810.jpg';
+const IMG_SPOILER = '/src/assets/images/product_spoiler_exterior_1790681500554.jpg';
+
+export const SEED_PRODUCTS: Product[] = [
+  // 1
+  {
+    id: 'prod_creta_7d_mats',
+    name: 'AutoApex 7D Laser-Cut All-Weather Floor Mats for Hyundai Creta',
+    slug: 'hyundai-creta-7d-laser-cut-floor-mats',
+    description: 'Precision engineered 7D deep-dish floor mats molded with laser scans for Hyundai Creta. Includes detachable curly anti-skid mat layer, carbon weave finish, high edge containment, and metal reinforced heel pad for lifelong driver comfort.',
+    brand: 'ApexFit Precision',
+    category: 'Interior',
+    subcategory: 'Floor Mats',
+    sku: 'APX-FM-CRT-7D-01',
+    price: 4999,
+    mrp: 7499,
+    discountPercent: 33,
+    stock: 28,
+    reservedStock: 2,
+    lowStockThreshold: 5,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_FLOOR_MATS, IMG_SEAT_COVERS],
+    thumbnail: IMG_FLOOR_MATS,
+    rating: 4.8,
+    reviewCount: 124,
+    specifications: {
+      'Material': 'Virgin EVA + Carbon Textured PU Leather + Wire Coil',
+      'Fitment': 'Laser Scanned 100% Edge-to-Edge Custom Mold',
+      'Waterproof': '100% Impermeable with raised spill walls',
+      'Layers': '7-Layer Composite with Anti-Skid Velcro Base',
+      'Weight': '4.8 kg'
+    },
+    compatibility: [
+      { brandId: 'brand_hyundai', brandName: 'Hyundai', modelId: 'model_creta', modelName: 'Creta', yearStart: 2020, yearEnd: 2025 }
+    ],
+    universalFit: false,
+    tags: ['Creta', 'Floor Mats', '7D Mats', 'All Weather', 'Custom Fit'],
+    isFeatured: true,
+    isBestseller: true,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '2 Years Manufacturer Replacement Warranty',
+    deliveryDays: 3,
+    createdAt: '2026-01-15T09:00:00.000Z',
+    updatedAt: '2026-02-10T14:30:00.000Z'
+  },
+  // 2
+  {
+    id: 'prod_nappa_leather_seat_creta',
+    name: 'Signature Nappa Perforated Custom Seat Covers - Hyundai Creta',
+    slug: 'hyundai-creta-nappa-perforated-leather-seat-covers',
+    description: 'Luxury automotive-grade breathable perforated Nappa leather seat covers with contrasting scarlet sports stitching. Integrated high-density memory foam padding, airbag-certified deployable side seams, and lumbar contouring.',
+    brand: 'ApexFit Luxury',
+    category: 'Interior',
+    subcategory: 'Seat Covers',
+    sku: 'APX-SC-CRT-NAP-02',
+    price: 9499,
+    mrp: 14999,
+    discountPercent: 37,
+    stock: 14,
+    reservedStock: 1,
+    lowStockThreshold: 4,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_SEAT_COVERS, IMG_FLOOR_MATS],
+    thumbnail: IMG_SEAT_COVERS,
+    rating: 4.9,
+    reviewCount: 89,
+    specifications: {
+      'Material': 'High-Grain Perforated Nappa Leatherette',
+      'Airbag Safety': 'Airbag Compatible Laser-Weakened Seam',
+      'Padding': '14mm High-Resilience Automotive Memory Foam',
+      'Colors': 'Obsidian Black with Scarlet Stitching',
+      'Package Content': 'Front Row (2), Rear Bench (60:40 split), 5 Headrests'
+    },
+    compatibility: [
+      { brandId: 'brand_hyundai', brandName: 'Hyundai', modelId: 'model_creta', modelName: 'Creta', yearStart: 2020, yearEnd: 2025 }
+    ],
+    universalFit: false,
+    tags: ['Creta', 'Seat Covers', 'Leather', 'Airbag Safe', 'Comfort'],
+    isFeatured: true,
+    isBestseller: true,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '3 Years Warranty against peeling and cracking',
+    deliveryDays: 4,
+    createdAt: '2026-01-20T10:00:00.000Z',
+    updatedAt: '2026-02-14T11:20:00.000Z'
+  },
+  // 3
+  {
+    id: 'prod_4k_dual_dashcam_pro',
+    name: 'ApexVision 4K Dual Dash Cam with Night Vision & Built-in GPS',
+    slug: 'apexvision-4k-dual-dash-cam-night-vision-gps',
+    description: 'Flagship automotive recording system featuring real 4K Front (3840x2160@30fps) + 1080P Rear cameras with Sony STARVIS 2 sensor, supercapacitor power cell, ADAS driver assist, 24/7 parking surveillance mode, and 5GHz Wi-Fi app connection.',
+    brand: 'ApexVision',
+    category: 'Electronics',
+    subcategory: 'Dash Cameras',
+    sku: 'APX-EL-DC4K-03',
+    price: 8999,
+    mrp: 12999,
+    discountPercent: 31,
+    stock: 45,
+    reservedStock: 3,
+    lowStockThreshold: 8,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_DASH_CAM, IMG_HERO],
+    thumbnail: IMG_DASH_CAM,
+    rating: 4.9,
+    reviewCount: 215,
+    specifications: {
+      'Resolution': 'Front 4K UHD 2160p @ 30fps | Rear Full HD 1080p',
+      'Sensor': 'Sony STARVIS 2 IMX678 Ultra Low Light',
+      'Field of View': '155° Ultra Wide Angle (F1.8 Aperture)',
+      'Connectivity': '5GHz High-Speed Wi-Fi + Bluetooth 5.2',
+      'Storage': 'Supports MicroSD up to 256GB (U3 Class 10)'
+    },
+    compatibility: [
+      { brandId: 'universal', brandName: 'All Brands', modelId: 'all_models', modelName: 'Universal Fitment', yearStart: 2010, yearEnd: 2026, universal: true }
+    ],
+    universalFit: true,
+    tags: ['Dash Cam', '4K Camera', 'Sony Starvis', 'Universal', 'Safety', 'GPS'],
+    isFeatured: true,
+    isBestseller: true,
+    isNewArrival: true,
+    status: 'ACTIVE',
+    warranty: '2 Years Comprehensive Replacement Warranty',
+    deliveryDays: 2,
+    createdAt: '2026-01-05T08:00:00.000Z',
+    updatedAt: '2026-02-18T16:00:00.000Z'
+  },
+  // 4
+  {
+    id: 'prod_carbon_aerodynamic_spoiler_creta',
+    name: 'AeroLine Gloss Carbon Fiber Trunk Spoiler - Hyundai Creta',
+    slug: 'hyundai-creta-gloss-carbon-fiber-aerodynamic-spoiler',
+    description: 'High-downforce aerodynamic rear lip spoiler hydro-dipped in authentic 3K twill carbon weave with automotive UV-cleared clearcoat. Installed cleanly using industrial 3M 5952 VHB tape without drilling body panels.',
+    brand: 'AeroCraft',
+    category: 'Exterior',
+    subcategory: 'Spoilers',
+    sku: 'APX-EX-SP-CRT-04',
+    price: 3499,
+    mrp: 5499,
+    discountPercent: 36,
+    stock: 19,
+    reservedStock: 0,
+    lowStockThreshold: 4,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_SPOILER, IMG_HERO],
+    thumbnail: IMG_SPOILER,
+    rating: 4.7,
+    reviewCount: 68,
+    specifications: {
+      'Material': 'High Impact ABS Polymer with 3K Carbon Finish',
+      'Mounting': 'Drill-Free 3M Automotive Structural VHB Acrylic Tape',
+      'Finish': 'Triple Gloss Clearcoat with Anti-UV Protection',
+      'Aerodynamics': 'Reduces rear wake drag by up to 4.2%'
+    },
+    compatibility: [
+      { brandId: 'brand_hyundai', brandName: 'Hyundai', modelId: 'model_creta', modelName: 'Creta', yearStart: 2020, yearEnd: 2025 }
+    ],
+    universalFit: false,
+    tags: ['Spoiler', 'Carbon Fiber', 'Creta', 'Styling', 'Exterior'],
+    isFeatured: false,
+    isBestseller: false,
+    isNewArrival: true,
+    status: 'ACTIVE',
+    warranty: '1 Year Paint and Surface Warranty',
+    deliveryDays: 3,
+    createdAt: '2026-02-01T11:00:00.000Z',
+    updatedAt: '2026-02-15T09:00:00.000Z'
+  },
+  // 5
+  {
+    id: 'prod_tata_nexon_7d_mats',
+    name: 'AutoApex 7D Precision Deep Floor Mats for Tata Nexon (2020-2025)',
+    slug: 'tata-nexon-7d-precision-deep-floor-mats',
+    description: 'Specifically engineered for Tata Nexon passenger cabin curves. Raised spill barrier walls guard against mud, slush, water, and debris. Removable top grass mat allows quick rinsing.',
+    brand: 'ApexFit Precision',
+    category: 'Interior',
+    subcategory: 'Floor Mats',
+    sku: 'APX-FM-NXN-7D-05',
+    price: 4799,
+    mrp: 7299,
+    discountPercent: 34,
+    stock: 31,
+    reservedStock: 2,
+    lowStockThreshold: 6,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_FLOOR_MATS, IMG_SEAT_COVERS],
+    thumbnail: IMG_FLOOR_MATS,
+    rating: 4.8,
+    reviewCount: 96,
+    specifications: {
+      'Material': 'Virgin EVA + Carbon Textured PU Leather',
+      'Fitment': 'Digitally measured Tata Nexon floor curvature',
+      'Waterproof': '100% Water Resistant',
+      'Included': 'Full 5-Piece Complete Cabin Mat System'
+    },
+    compatibility: [
+      { brandId: 'brand_tata', brandName: 'Tata Motors', modelId: 'model_nexon', modelName: 'Nexon', yearStart: 2020, yearEnd: 2025 }
+    ],
+    universalFit: false,
+    tags: ['Nexon', 'Floor Mats', '7D Mats', 'Tata', 'Interior'],
+    isFeatured: true,
+    isBestseller: true,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '2 Years Warranty',
+    deliveryDays: 3,
+    createdAt: '2026-01-18T10:00:00.000Z',
+    updatedAt: '2026-02-20T12:00:00.000Z'
+  },
+  // 6
+  {
+    id: 'prod_nexon_leather_seat_covers',
+    name: 'AeroFit Sport Contour Seat Covers for Tata Nexon',
+    slug: 'tata-nexon-aerofit-sport-contour-seat-covers',
+    description: 'Sport bucket bolster support styling tailored specifically for Tata Nexon. Resilient ultra-soft faux leather with breathable perforated center ribs and dual-tone slate & crimson piping.',
+    brand: 'ApexFit Luxury',
+    category: 'Interior',
+    subcategory: 'Seat Covers',
+    sku: 'APX-SC-NXN-06',
+    price: 8999,
+    mrp: 13999,
+    discountPercent: 35,
+    stock: 12,
+    reservedStock: 1,
+    lowStockThreshold: 3,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_SEAT_COVERS, IMG_FLOOR_MATS],
+    thumbnail: IMG_SEAT_COVERS,
+    rating: 4.7,
+    reviewCount: 74,
+    specifications: {
+      'Material': 'High-Density Breathable Microfiber PU',
+      'Compatibility': 'Airbag Ready Side Panels',
+      'Weight': '5.2 kg'
+    },
+    compatibility: [
+      { brandId: 'brand_tata', brandName: 'Tata Motors', modelId: 'model_nexon', modelName: 'Nexon', yearStart: 2020, yearEnd: 2025 }
+    ],
+    universalFit: false,
+    tags: ['Nexon', 'Seat Covers', 'Tata', 'Luxury'],
+    isFeatured: false,
+    isBestseller: true,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '3 Years Warranty',
+    deliveryDays: 4,
+    createdAt: '2026-01-22T14:00:00.000Z',
+    updatedAt: '2026-02-11T17:00:00.000Z'
+  },
+  // 7
+  {
+    id: 'prod_thar_armrest_organizer',
+    name: 'Rugged Central Armrest Console with Cup Holders - Mahindra Thar',
+    slug: 'mahindra-thar-rugged-central-armrest-console-organizer',
+    description: 'Heavy-duty steel-reinforced drop-in central console armrest designed to eliminate fatigue during off-road and highway drives in the Mahindra Thar. Features dual cup holders, USB fast charger pass-through, and hidden locking valuables compartment.',
+    brand: 'TrailArmor',
+    category: 'Interior',
+    subcategory: 'Car Organizers',
+    sku: 'APX-IN-ARM-THR-07',
+    price: 3299,
+    mrp: 4999,
+    discountPercent: 34,
+    stock: 22,
+    reservedStock: 0,
+    lowStockThreshold: 5,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_SEAT_COVERS, IMG_HERO],
+    thumbnail: IMG_SEAT_COVERS,
+    rating: 4.8,
+    reviewCount: 142,
+    specifications: {
+      'Material': 'Military-Grade Structural Polymer & High-Density Cushion',
+      'Installation': 'Direct bolt-on to factory seat-bolt rails (no holes)',
+      'Compartments': 'Main tray, sunglass holster, dual 75mm cup holders'
+    },
+    compatibility: [
+      { brandId: 'brand_mahindra', brandName: 'Mahindra', modelId: 'model_thar', modelName: 'Thar', yearStart: 2020, yearEnd: 2025 }
+    ],
+    universalFit: false,
+    tags: ['Thar', 'Mahindra', 'Armrest', 'Offroad', 'Interior'],
+    isFeatured: true,
+    isBestseller: true,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '2 Years Warranty',
+    deliveryDays: 3,
+    createdAt: '2026-01-10T12:00:00.000Z',
+    updatedAt: '2026-02-19T10:00:00.000Z'
+  },
+  // 8
+  {
+    id: 'prod_fortuner_side_steps_led',
+    name: 'ApexGlide Heavy-Duty Illuminated Side Foot Steps - Toyota Fortuner',
+    slug: 'toyota-fortuner-illuminated-heavy-duty-side-steps',
+    description: 'Aircraft-grade extruded aluminum side foot running boards engineered to sustain 250kg dynamic step load on Toyota Fortuner. Equipped with automatic LED puddle lighting strips that sync with door unlocking.',
+    brand: 'TitanCraft',
+    category: 'Exterior',
+    subcategory: 'Chrome Accessories',
+    sku: 'APX-EX-STP-FRT-08',
+    price: 14999,
+    mrp: 22999,
+    discountPercent: 35,
+    stock: 8,
+    reservedStock: 1,
+    lowStockThreshold: 3,
+    stockStatus: 'LOW_STOCK',
+    images: [IMG_SPOILER, IMG_HERO],
+    thumbnail: IMG_SPOILER,
+    rating: 4.9,
+    reviewCount: 52,
+    specifications: {
+      'Material': '6061-T6 Extruded Aerospace Aluminum',
+      'Load Capacity': '250 kg per step point',
+      'Lighting': 'IP68 Waterproof Cold White LED Strips'
+    },
+    compatibility: [
+      { brandId: 'brand_toyota', brandName: 'Toyota', modelId: 'model_fortuner', modelName: 'Fortuner', yearStart: 2018, yearEnd: 2025 }
+    ],
+    universalFit: false,
+    tags: ['Fortuner', 'Toyota', 'Side Steps', 'Exterior', 'Heavy Duty'],
+    isFeatured: true,
+    isBestseller: false,
+    isNewArrival: true,
+    status: 'ACTIVE',
+    warranty: '3 Years Structural Warranty',
+    deliveryDays: 5,
+    createdAt: '2026-01-12T15:00:00.000Z',
+    updatedAt: '2026-02-16T18:00:00.000Z'
+  },
+  // 9
+  {
+    id: 'prod_9h_ceramic_coating_kit',
+    name: 'ApexShield Ultra 10H Graphene & Ceramic Paint Protection Kit',
+    slug: 'apexshield-10h-graphene-ceramic-paint-protection-kit',
+    description: 'Professional grade 10H hardness liquid graphene nano-matrix coating for automotive exterior paint. Offers 5-year hydrophobic water-beading contact angle (>118°), swirl scratch resistance, chemical corrosion barrier, and mirror glass gloss.',
+    brand: 'ApexShield Lab',
+    category: 'Car Care',
+    subcategory: 'Ceramic Polish',
+    sku: 'APX-CC-10H-09',
+    price: 2499,
+    mrp: 4499,
+    discountPercent: 44,
+    stock: 62,
+    reservedStock: 4,
+    lowStockThreshold: 10,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_HERO, IMG_DASH_CAM],
+    thumbnail: IMG_HERO,
+    rating: 4.9,
+    reviewCount: 310,
+    specifications: {
+      'Volume': '50ml (Covers full-sized SUV including wheels)',
+      'Hardness': '10H Pencil Hardness Verified',
+      'Durability': 'Up to 5 Years / 60,000 km',
+      'Includes': '50ml Graphene Bottle, Applicator Block, 4 Suede Cloths, Gloves'
+    },
+    compatibility: [
+      { brandId: 'universal', brandName: 'All Brands', modelId: 'all_models', modelName: 'Universal Fitment', yearStart: 2010, yearEnd: 2026, universal: true }
+    ],
+    universalFit: true,
+    tags: ['Ceramic Coating', 'Graphene', 'Paint Protection', 'Car Care', 'Universal'],
+    isFeatured: true,
+    isBestseller: true,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '5 Years Surface Protection Certificate',
+    deliveryDays: 2,
+    createdAt: '2026-01-08T09:00:00.000Z',
+    updatedAt: '2026-02-21T11:00:00.000Z'
+  },
+  // 10
+  {
+    id: 'prod_tpms_solar_tire_monitor',
+    name: 'AeroSens Solar Wireless TPMS Tire Pressure Monitor System',
+    slug: 'aerosens-solar-wireless-tire-pressure-monitoring-system',
+    description: 'High-accuracy real-time tire pressure and temperature monitoring system with dual solar charging and USB Type-C backup. Comes with 4 anti-theft IP68 external sensors and audible PSI drop alarm.',
+    brand: 'AeroSens',
+    category: 'Electronics',
+    subcategory: 'Parking Sensors',
+    sku: 'APX-EL-TPMS-10',
+    price: 2199,
+    mrp: 3999,
+    discountPercent: 45,
+    stock: 55,
+    reservedStock: 3,
+    lowStockThreshold: 8,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_DASH_CAM, IMG_HERO],
+    thumbnail: IMG_DASH_CAM,
+    rating: 4.6,
+    reviewCount: 184,
+    specifications: {
+      'Display': 'Solar Powered Anti-Glare Color LCD Display',
+      'Pressure Range': '0 to 87 PSI (±1.5 PSI accuracy)',
+      'Sensors': '4 External Valves with Anti-Theft Lock Nuts',
+      'Battery Life': 'Sensor battery lasts 2+ years (replaceable CR1632)'
+    },
+    compatibility: [
+      { brandId: 'universal', brandName: 'All Brands', modelId: 'all_models', modelName: 'Universal Fitment', yearStart: 2010, yearEnd: 2026, universal: true }
+    ],
+    universalFit: true,
+    tags: ['TPMS', 'Tire Pressure', 'Solar', 'Electronics', 'Universal'],
+    isFeatured: false,
+    isBestseller: true,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '1 Year Replacement Warranty',
+    deliveryDays: 2,
+    createdAt: '2026-01-14T11:00:00.000Z',
+    updatedAt: '2026-02-18T14:00:00.000Z'
+  },
+  // 11
+  {
+    id: 'prod_all_weather_body_cover',
+    name: 'ApexShield 5-Layer All-Weather Waterproof Heavy Car Body Cover',
+    slug: 'apexshield-5-layer-waterproof-heavy-car-body-cover',
+    description: 'Custom fitted for your specific car model. 5-layer bonded non-woven fleece lining guards your vehicle against torrential rain, harsh UV sun exposure, bird droppings, and paint scratches. Buckle lock straps prevent blowing away during high winds.',
+    brand: 'ApexShield Lab',
+    category: 'Exterior',
+    subcategory: 'Body Covers',
+    sku: 'APX-EX-BC-UNI-11',
+    price: 2899,
+    mrp: 4999,
+    discountPercent: 42,
+    stock: 40,
+    reservedStock: 2,
+    lowStockThreshold: 6,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_HERO, IMG_SPOILER],
+    thumbnail: IMG_HERO,
+    rating: 4.7,
+    reviewCount: 145,
+    specifications: {
+      'Fabric': '100% Waterproof Oxford Polyester with Cotton Microfleece',
+      'Reflectors': '4 Night Reflective Warning Strips',
+      'Pockets': 'Integrated Custom Mirror and Sharkfin Pockets',
+      'Windproof': 'Center windproof clip buckle + elasticized hems'
+    },
+    compatibility: [
+      { brandId: 'brand_hyundai', brandName: 'Hyundai', modelId: 'model_creta', modelName: 'Creta', yearStart: 2019, yearEnd: 2025 },
+      { brandId: 'brand_tata', brandName: 'Tata Motors', modelId: 'model_nexon', modelName: 'Nexon', yearStart: 2019, yearEnd: 2025 },
+      { brandId: 'brand_kia', brandName: 'Kia', modelId: 'model_seltos', modelName: 'Seltos', yearStart: 2019, yearEnd: 2025 },
+      { brandId: 'brand_maruti', brandName: 'Maruti Suzuki', modelId: 'model_brezza', modelName: 'Brezza', yearStart: 2019, yearEnd: 2025 }
+    ],
+    universalFit: false,
+    tags: ['Body Cover', 'Waterproof', 'Exterior', 'Protection'],
+    isFeatured: false,
+    isBestseller: true,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '18 Months Warranty against tearing and UV decay',
+    deliveryDays: 3,
+    createdAt: '2026-01-19T08:00:00.000Z',
+    updatedAt: '2026-02-12T13:00:00.000Z'
+  },
+  // 12
+  {
+    id: 'prod_door_visors_chrome_creta',
+    name: 'Aerodynamic Smoke Door Window Visors with Chrome Trim - Creta',
+    slug: 'hyundai-creta-aerodynamic-smoke-door-window-visors-chrome',
+    description: 'Engineered specifically for Hyundai Creta window contours. Allows fresh air ventilation during rain without water ingress and diminishes highway wind buffeting noise. Injection molded virgin polycarbonate with mirror chrome insert.',
+    brand: 'AeroCraft',
+    category: 'Exterior',
+    subcategory: 'Door Visors',
+    sku: 'APX-EX-DV-CRT-12',
+    price: 1899,
+    mrp: 2999,
+    discountPercent: 37,
+    stock: 35,
+    reservedStock: 1,
+    lowStockThreshold: 5,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_SPOILER, IMG_FLOOR_MATS],
+    thumbnail: IMG_SPOILER,
+    rating: 4.6,
+    reviewCount: 88,
+    specifications: {
+      'Material': 'High-Grade Optical Polycarbonate with Stainless Chrome Strip',
+      'Installation': 'Pre-taped genuine 3M automotive adhesive tape',
+      'Quantity': 'Full Set of 4 (Front & Rear Windows)'
+    },
+    compatibility: [
+      { brandId: 'brand_hyundai', brandName: 'Hyundai', modelId: 'model_creta', modelName: 'Creta', yearStart: 2020, yearEnd: 2025 }
+    ],
+    universalFit: false,
+    tags: ['Door Visor', 'Creta', 'Window Deflector', 'Exterior'],
+    isFeatured: false,
+    isBestseller: false,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '1 Year Adhesive & Finish Warranty',
+    deliveryDays: 3,
+    createdAt: '2026-01-25T11:00:00.000Z',
+    updatedAt: '2026-02-17T15:00:00.000Z'
+  },
+  // 13
+  {
+    id: 'prod_ambient_led_lighting_kit',
+    name: 'LuxeGlow 64-Color Symphony App-Controlled Flowing Ambient Lighting',
+    slug: 'luxeglow-64-color-symphony-flowing-ambient-lighting-kit',
+    description: 'Factory-integrated look acrylic LED light bars with 64 dynamic RGBIC chasing effects, music synchronization, hidden door and dashboard illumination, and smartphone Bluetooth control.',
+    brand: 'LuxeGlow',
+    category: 'Interior',
+    subcategory: 'Ambient Lighting',
+    sku: 'APX-IN-AMB-13',
+    price: 3699,
+    mrp: 6499,
+    discountPercent: 43,
+    stock: 25,
+    reservedStock: 2,
+    lowStockThreshold: 5,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_HERO, IMG_SEAT_COVERS],
+    thumbnail: IMG_HERO,
+    rating: 4.8,
+    reviewCount: 167,
+    specifications: {
+      'Technology': 'Super Slim 1.5mm Optical Acrylic Guide',
+      'Control': 'iOS/Android App + Wireless Physical Button Switch',
+      'Zones': '6 Light Strips (Dashboard + 4 Doors) + 4 Footwell LED Pods',
+      'Power': 'Fuse-box tap or 12V cigarette adapter'
+    },
+    compatibility: [
+      { brandId: 'universal', brandName: 'All Brands', modelId: 'all_models', modelName: 'Universal Fitment', yearStart: 2012, yearEnd: 2026, universal: true }
+    ],
+    universalFit: true,
+    tags: ['Ambient Light', 'LED', 'Interior', 'Universal', 'Lighting'],
+    isFeatured: true,
+    isBestseller: false,
+    isNewArrival: true,
+    status: 'ACTIVE',
+    warranty: '1 Year Replacement Warranty',
+    deliveryDays: 2,
+    createdAt: '2026-02-02T13:00:00.000Z',
+    updatedAt: '2026-02-22T09:00:00.000Z'
+  },
+  // 14
+  {
+    id: 'prod_led_headlight_bulbs_160w',
+    name: 'ApexBeam 160W 24,000LM Canbus LED Headlight Conversion Kit (Pair)',
+    slug: 'apexbeam-160w-24000lm-canbus-led-headlight-conversion-kit',
+    description: 'Blinding clarity without blinding oncoming drivers. 160W true output, 6000K pure white daylight beam pattern, integrated copper heat pipe and 12,000 RPM hydraulic silent fan. Zero dashboard error codes with smart Canbus decoder.',
+    brand: 'ApexBeam',
+    category: 'Electronics',
+    subcategory: 'LED Lights',
+    sku: 'APX-EL-HL160-14',
+    price: 3999,
+    mrp: 6999,
+    discountPercent: 43,
+    stock: 48,
+    reservedStock: 1,
+    lowStockThreshold: 8,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_DASH_CAM, IMG_HERO],
+    thumbnail: IMG_DASH_CAM,
+    rating: 4.9,
+    reviewCount: 220,
+    specifications: {
+      'Lumens': '24,000 Lumens / Pair',
+      'Color Temperature': '6000K Crisp Diamond White',
+      'Cooling': 'Dual Vacuum Pure Copper Core Heat Pipes',
+      'Socket Options': 'H4, H7, H11, 9005 (Universal automotive bulb sockets)'
+    },
+    compatibility: [
+      { brandId: 'universal', brandName: 'All Brands', modelId: 'all_models', modelName: 'Universal Fitment', yearStart: 2010, yearEnd: 2026, universal: true }
+    ],
+    universalFit: true,
+    tags: ['LED Headlight', 'High Beam', 'Electronics', 'Universal', 'Night Drive'],
+    isFeatured: false,
+    isBestseller: true,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '2 Years Direct Replacement Warranty',
+    deliveryDays: 2,
+    createdAt: '2026-01-16T14:00:00.000Z',
+    updatedAt: '2026-02-19T15:00:00.000Z'
+  },
+  // 15
+  {
+    id: 'prod_wireless_carplay_adapter',
+    name: 'ApexLink Pro 2-in-1 Wireless Apple CarPlay & Android Auto Dongle',
+    slug: 'apexlink-pro-wireless-apple-carplay-android-auto-adapter',
+    description: 'Say goodbye to tangled dashboard cables. Instantly converts your vehicle’s factory wired CarPlay or Android Auto to 100% wireless. Fast 5.8GHz transmission, 5-second automatic connection upon ignition, and steering control retention.',
+    brand: 'ApexLink',
+    category: 'Electronics',
+    subcategory: 'GPS Trackers',
+    sku: 'APX-EL-CPWL-15',
+    price: 3199,
+    mrp: 5999,
+    discountPercent: 47,
+    stock: 70,
+    reservedStock: 5,
+    lowStockThreshold: 10,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_DASH_CAM, IMG_HERO],
+    thumbnail: IMG_DASH_CAM,
+    rating: 4.8,
+    reviewCount: 295,
+    specifications: {
+      'Wi-Fi': 'Dual Band 2.4GHz + 5.8GHz Broadcom Module',
+      'Compatibility': 'Vehicles with factory OEM wired CarPlay/Android Auto',
+      'Port': 'Includes USB-A and USB-C braided cables'
+    },
+    compatibility: [
+      { brandId: 'universal', brandName: 'All Brands', modelId: 'all_models', modelName: 'Universal Fitment', yearStart: 2017, yearEnd: 2026, universal: true }
+    ],
+    universalFit: true,
+    tags: ['CarPlay', 'Android Auto', 'Wireless', 'Electronics', 'Universal'],
+    isFeatured: true,
+    isBestseller: true,
+    isNewArrival: true,
+    status: 'ACTIVE',
+    warranty: '1 Year Hassle-Free Replacement',
+    deliveryDays: 2,
+    createdAt: '2026-02-05T09:00:00.000Z',
+    updatedAt: '2026-02-23T11:00:00.000Z'
+  },
+  // 16
+  {
+    id: 'prod_microfiber_detailing_pack',
+    name: 'ApexClean 800 GSM Edgeless Plush Microfiber Towels (Pack of 4)',
+    slug: 'apexclean-800-gsm-edgeless-plush-microfiber-towels-pack-4',
+    description: 'Ultra-heavy 800 GSM dual-pile Korean microfiber drying towels. Laser ultrasonic cut edgeless design guarantees 100% scratch-free buffing for delicate clearcoats, wax application, and water drying.',
+    brand: 'ApexShield Lab',
+    category: 'Car Care',
+    subcategory: 'Microfiber Cloth',
+    sku: 'APX-CC-MF800-16',
+    price: 999,
+    mrp: 1899,
+    discountPercent: 47,
+    stock: 95,
+    reservedStock: 2,
+    lowStockThreshold: 15,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_HERO, IMG_SEAT_COVERS],
+    thumbnail: IMG_HERO,
+    rating: 4.9,
+    reviewCount: 420,
+    specifications: {
+      'Density': '800 GSM Ultra Dense Dual-Fleece Weave',
+      'Dimensions': '40cm x 40cm',
+      'Blend': '80% Polyester / 20% Polyamide'
+    },
+    compatibility: [
+      { brandId: 'universal', brandName: 'All Brands', modelId: 'all_models', modelName: 'Universal Fitment', yearStart: 2010, yearEnd: 2026, universal: true }
+    ],
+    universalFit: true,
+    tags: ['Microfiber', 'Detailing', 'Car Care', 'Cleaning', 'Universal'],
+    isFeatured: false,
+    isBestseller: true,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: 'Quality Guarantee',
+    deliveryDays: 2,
+    createdAt: '2026-01-01T08:00:00.000Z',
+    updatedAt: '2026-02-15T10:00:00.000Z'
+  },
+  // 17
+  {
+    id: 'prod_seltos_7d_mats',
+    name: 'AutoApex 7D Luxury Molded Floor Mats - Kia Seltos (2019-2025)',
+    slug: 'kia-seltos-7d-luxury-molded-floor-mats',
+    description: 'Molded to millimeter precision for the Kia Seltos floorpan. Complete dead-pedal coverage, anti-slip backing nibs, and luxury diamond stitched PU leather with removable upper grass coil mat.',
+    brand: 'ApexFit Precision',
+    category: 'Interior',
+    subcategory: 'Floor Mats',
+    sku: 'APX-FM-SLT-7D-17',
+    price: 4999,
+    mrp: 7499,
+    discountPercent: 33,
+    stock: 24,
+    reservedStock: 1,
+    lowStockThreshold: 5,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_FLOOR_MATS, IMG_SEAT_COVERS],
+    thumbnail: IMG_FLOOR_MATS,
+    rating: 4.8,
+    reviewCount: 110,
+    specifications: {
+      'Material': 'Laser-Formed 7D Composite',
+      'Fit': 'Kia Seltos 2019-2025 (All Trims)'
+    },
+    compatibility: [
+      { brandId: 'brand_kia', brandName: 'Kia', modelId: 'model_seltos', modelName: 'Seltos', yearStart: 2019, yearEnd: 2025 }
+    ],
+    universalFit: false,
+    tags: ['Seltos', 'Kia', 'Floor Mats', '7D Mats'],
+    isFeatured: false,
+    isBestseller: true,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '2 Years Warranty',
+    deliveryDays: 3,
+    createdAt: '2026-01-20T12:00:00.000Z',
+    updatedAt: '2026-02-14T14:00:00.000Z'
+  },
+  // 18
+  {
+    id: 'prod_scorpio_n_roof_crossbars',
+    name: 'AeroCross Heavy-Duty Aluminum Roof Rail Crossbars - Scorpio-N',
+    slug: 'mahindra-scorpio-n-heavy-duty-aluminum-roof-rail-crossbars',
+    description: 'Aero-wing low drag profile crossbars designed for flush roof rails on the Mahindra Scorpio-N. Supports up to 90kg dynamic roof top tent and luggage carrier load with key-locking security clamps.',
+    brand: 'TitanCraft',
+    category: 'Exterior',
+    subcategory: 'Roof Carriers',
+    sku: 'APX-EX-RC-SCP-18',
+    price: 6499,
+    mrp: 9999,
+    discountPercent: 35,
+    stock: 16,
+    reservedStock: 0,
+    lowStockThreshold: 4,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_SPOILER, IMG_HERO],
+    thumbnail: IMG_SPOILER,
+    rating: 4.9,
+    reviewCount: 47,
+    specifications: {
+      'Material': 'T6 Aviation Aluminum with Anti-Corrosion Anodization',
+      'Dynamic Capacity': '90 kg (Static 220 kg)',
+      'Security': 'Integrated Steel Key Lock Cylinders (2 keys)'
+    },
+    compatibility: [
+      { brandId: 'brand_mahindra', brandName: 'Mahindra', modelId: 'model_scorpio_n', modelName: 'Scorpio-N', yearStart: 2022, yearEnd: 2025 }
+    ],
+    universalFit: false,
+    tags: ['Scorpio-N', 'Roof Bars', 'Exterior', 'Overlanding'],
+    isFeatured: true,
+    isBestseller: false,
+    isNewArrival: true,
+    status: 'ACTIVE',
+    warranty: '3 Years Warranty',
+    deliveryDays: 4,
+    createdAt: '2026-02-03T10:00:00.000Z',
+    updatedAt: '2026-02-20T16:00:00.000Z'
+  },
+  // 19
+  {
+    id: 'prod_honda_city_seat_covers',
+    name: 'ApexFit Executive Nappa Tan Seat Covers for Honda City',
+    slug: 'honda-city-executive-nappa-tan-seat-covers',
+    description: 'Transform your Honda City cabin into an ultra-luxury sedan lounge. Rich caramel tan Nappa leatherette, perforated climate-flow seating surfaces, dual-density memory foam, and certified side airbag deployment seams.',
+    brand: 'ApexFit Luxury',
+    category: 'Interior',
+    subcategory: 'Seat Covers',
+    sku: 'APX-SC-CTY-19',
+    price: 9999,
+    mrp: 15499,
+    discountPercent: 35,
+    stock: 15,
+    reservedStock: 1,
+    lowStockThreshold: 3,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_SEAT_COVERS, IMG_FLOOR_MATS],
+    thumbnail: IMG_SEAT_COVERS,
+    rating: 4.9,
+    reviewCount: 82,
+    specifications: {
+      'Color': 'Caramel Tan with Ivory Piping',
+      'Fit': 'Honda City 5th Gen (2020-2025)',
+      'Airbag Safe': 'Yes, Certified Deployable Seam'
+    },
+    compatibility: [
+      { brandId: 'brand_honda', brandName: 'Honda', modelId: 'model_city', modelName: 'City', yearStart: 2020, yearEnd: 2025 }
+    ],
+    universalFit: false,
+    tags: ['Honda City', 'Seat Covers', 'Tan Leather', 'Executive'],
+    isFeatured: false,
+    isBestseller: false,
+    isNewArrival: true,
+    status: 'ACTIVE',
+    warranty: '3 Years Warranty',
+    deliveryDays: 4,
+    createdAt: '2026-01-28T14:00:00.000Z',
+    updatedAt: '2026-02-18T12:00:00.000Z'
+  },
+  // 20
+  {
+    id: 'prod_ph_neutral_snow_foam_shampoo',
+    name: 'ApexWash Super-Foam pH Neutral Citrus Car Shampoo (2 Liters)',
+    slug: 'apexwash-super-foam-ph-neutral-citrus-car-shampoo-2l',
+    description: 'High-lubricity snow foam shampoo engineered for foam cannons and two-bucket washes. Breaks down grime, bugs, and traffic film without stripping delicate wax or ceramic coating layers.',
+    brand: 'ApexShield Lab',
+    category: 'Car Care',
+    subcategory: 'Car Shampoo',
+    sku: 'APX-CC-SHMP-20',
+    price: 899,
+    mrp: 1499,
+    discountPercent: 40,
+    stock: 80,
+    reservedStock: 3,
+    lowStockThreshold: 12,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_HERO, IMG_FLOOR_MATS],
+    thumbnail: IMG_HERO,
+    rating: 4.8,
+    reviewCount: 340,
+    specifications: {
+      'Volume': '2,000 ml (Concentrated 1:10 dilution ratio)',
+      'Formula': '100% Biodegradable & pH Neutral (pH 7.0)',
+      'Safe on': 'Ceramic coatings, PPF, matte wraps, and bare clearcoat'
+    },
+    compatibility: [
+      { brandId: 'universal', brandName: 'All Brands', modelId: 'all_models', modelName: 'Universal Fitment', yearStart: 2010, yearEnd: 2026, universal: true }
+    ],
+    universalFit: true,
+    tags: ['Car Shampoo', 'Snow Foam', 'Car Care', 'Universal', 'Wash'],
+    isFeatured: false,
+    isBestseller: true,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '100% Quality Guaranteed',
+    deliveryDays: 2,
+    createdAt: '2026-01-05T09:00:00.000Z',
+    updatedAt: '2026-02-10T16:00:00.000Z'
+  },
+  // 21
+  {
+    id: 'prod_magnetic_sunshades_creta',
+    name: 'SnapFit Magnetic UV Window Sun Shades (Full Set of 4) - Creta',
+    slug: 'hyundai-creta-magnetic-uv-window-sun-shades-set-4',
+    description: 'High-flux neodymium magnetic window sunshades contoured for Hyundai Creta window frames. Blocks 95% of scorching infrared heat and harmful UV rays while preserving outward visibility and allowing windows to roll down.',
+    brand: 'ApexFit Precision',
+    category: 'Interior',
+    subcategory: 'Sun Shades',
+    sku: 'APX-IN-SS-CRT-21',
+    price: 1599,
+    mrp: 2799,
+    discountPercent: 43,
+    stock: 44,
+    reservedStock: 2,
+    lowStockThreshold: 6,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_FLOOR_MATS, IMG_HERO],
+    thumbnail: IMG_FLOOR_MATS,
+    rating: 4.7,
+    reviewCount: 153,
+    specifications: {
+      'Magnets': 'High-Intensity Neodymium Frame Clip Magnets',
+      'Fabric': 'Breathable Micro-Mesh Thermal Fabric',
+      'Window Functionality': 'Roll down window freely with shades installed'
+    },
+    compatibility: [
+      { brandId: 'brand_hyundai', brandName: 'Hyundai', modelId: 'model_creta', modelName: 'Creta', yearStart: 2020, yearEnd: 2025 }
+    ],
+    universalFit: false,
+    tags: ['Sun Shades', 'Creta', 'Magnetic', 'UV Protection', 'Interior'],
+    isFeatured: false,
+    isBestseller: true,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '1 Year Warranty',
+    deliveryDays: 3,
+    createdAt: '2026-01-12T10:00:00.000Z',
+    updatedAt: '2026-02-16T14:00:00.000Z'
+  },
+  // 22
+  {
+    id: 'prod_underseat_powered_subwoofer',
+    name: 'SoundApex 1000W Ultra-Slim Compact Active Underseat Car Subwoofer',
+    slug: 'soundapex-1000w-ultra-slim-compact-underseat-car-subwoofer',
+    description: 'Thumping tight bass without sacrificing valuable trunk boot space. Fits discreetly underneath the driver or passenger seat. Features a 10-inch die-cast aluminum woofer, integrated Class-D MOSFET amplifier, and wired dashboard bass volume knob.',
+    brand: 'SoundApex',
+    category: 'Electronics',
+    subcategory: 'Car Audio',
+    sku: 'APX-EL-SUB10-22',
+    price: 7499,
+    mrp: 11999,
+    discountPercent: 37,
+    stock: 20,
+    reservedStock: 1,
+    lowStockThreshold: 4,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_DASH_CAM, IMG_HERO],
+    thumbnail: IMG_DASH_CAM,
+    rating: 4.9,
+    reviewCount: 118,
+    specifications: {
+      'Peak Power': '1000 Watts Peak (250W RMS)',
+      'Dimensions': '345mm x 260mm x 68mm (Ultra Thin)',
+      'Chassis': 'Sealed Heavy-Duty Cast Aluminum Heat-Dissipation Enclosure'
+    },
+    compatibility: [
+      { brandId: 'universal', brandName: 'All Brands', modelId: 'all_models', modelName: 'Universal Fitment', yearStart: 2010, yearEnd: 2026, universal: true }
+    ],
+    universalFit: true,
+    tags: ['Subwoofer', 'Car Audio', 'Bass', 'Electronics', 'Universal'],
+    isFeatured: true,
+    isBestseller: false,
+    isNewArrival: true,
+    status: 'ACTIVE',
+    warranty: '2 Years Manufacturer Warranty',
+    deliveryDays: 3,
+    createdAt: '2026-02-08T11:00:00.000Z',
+    updatedAt: '2026-02-21T18:00:00.000Z'
+  },
+  // 23
+  {
+    id: 'prod_mud_flaps_nexon',
+    name: 'Heavy-Duty Anti-Crack Mud Flaps Splash Guards - Tata Nexon',
+    slug: 'tata-nexon-heavy-duty-anti-crack-mud-flaps-splash-guards',
+    description: 'Molded custom mud flaps to protect lower body panels from rock chips, road tar, and muddy slush. Made of high-flexibility impact modified thermoplastic.',
+    brand: 'AeroCraft',
+    category: 'Exterior',
+    subcategory: 'Mud Flaps',
+    sku: 'APX-EX-MF-NXN-23',
+    price: 899,
+    mrp: 1499,
+    discountPercent: 40,
+    stock: 42,
+    reservedStock: 0,
+    lowStockThreshold: 6,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_SPOILER, IMG_FLOOR_MATS],
+    thumbnail: IMG_SPOILER,
+    rating: 4.6,
+    reviewCount: 65,
+    specifications: {
+      'Set': 'Pack of 4 (Front Left/Right & Rear Left/Right)',
+      'Material': 'Flexible TPE Rubber Compound'
+    },
+    compatibility: [
+      { brandId: 'brand_tata', brandName: 'Tata Motors', modelId: 'model_nexon', modelName: 'Nexon', yearStart: 2020, yearEnd: 2025 }
+    ],
+    universalFit: false,
+    tags: ['Mud Flaps', 'Nexon', 'Splash Guard', 'Exterior'],
+    isFeatured: false,
+    isBestseller: false,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '1 Year Warranty',
+    deliveryDays: 3,
+    createdAt: '2026-01-20T09:00:00.000Z',
+    updatedAt: '2026-02-12T10:00:00.000Z'
+  },
+  // 24
+  {
+    id: 'prod_perforated_steering_wheel_cover',
+    name: 'ApexGrip Hand-Stitched Perforated Carbon Fiber Steering Wrap',
+    slug: 'apexgrip-hand-stitched-perforated-carbon-steering-wheel-wrap',
+    description: 'Bespoke hand-stitch DIY steering wheel cover featuring authentic perforated microfiber leather with carbon fiber texture accents and sports red alignment stripe at 12 o’clock. Includes high-tensile needle and bonded wax thread.',
+    brand: 'ApexFit Luxury',
+    category: 'Interior',
+    subcategory: 'Steering Covers',
+    sku: 'APX-IN-ST-UNI-24',
+    price: 1199,
+    mrp: 1999,
+    discountPercent: 40,
+    stock: 58,
+    reservedStock: 1,
+    lowStockThreshold: 10,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_SEAT_COVERS, IMG_HERO],
+    thumbnail: IMG_SEAT_COVERS,
+    rating: 4.8,
+    reviewCount: 190,
+    specifications: {
+      'Diameter': 'Universal 37cm - 38cm (Fits 95% of passenger vehicles)',
+      'Grip': 'Sweat-absorbing anti-slip textured grip',
+      'Included': 'Cover wrap, 2 curved needles, high tensile red thread'
+    },
+    compatibility: [
+      { brandId: 'universal', brandName: 'All Brands', modelId: 'all_models', modelName: 'Universal Fitment', yearStart: 2010, yearEnd: 2026, universal: true }
+    ],
+    universalFit: true,
+    tags: ['Steering Cover', 'Interior', 'Carbon Fiber', 'Grip', 'Universal'],
+    isFeatured: false,
+    isBestseller: true,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '2 Years Wear Warranty',
+    deliveryDays: 2,
+    createdAt: '2026-01-15T11:00:00.000Z',
+    updatedAt: '2026-02-18T13:00:00.000Z'
+  },
+  // 25
+  {
+    id: 'prod_gps_vehicle_tracker_4g',
+    name: 'ApexTrack 4G Real-Time Vehicle GPS Tracker with Remote Engine Cut-Off',
+    slug: 'apextrack-4g-real-time-vehicle-gps-tracker-engine-cutoff',
+    description: 'Bank-grade vehicle anti-theft tracking module. Live pinpoint satellite tracking with 10-second refresh rate, geo-fencing breach alarms, speeding alerts, route playback, and emergency remote engine immobilizer from your smartphone.',
+    brand: 'ApexVision',
+    category: 'Electronics',
+    subcategory: 'GPS Trackers',
+    sku: 'APX-EL-GPS4G-25',
+    price: 2799,
+    mrp: 4999,
+    discountPercent: 44,
+    stock: 38,
+    reservedStock: 2,
+    lowStockThreshold: 5,
+    stockStatus: 'IN_STOCK',
+    images: [IMG_DASH_CAM, IMG_HERO],
+    thumbnail: IMG_DASH_CAM,
+    rating: 4.8,
+    reviewCount: 165,
+    specifications: {
+      'Network': '4G LTE Global Band with 2G Fallback',
+      'Accuracy': 'Pinpoint GPS precision within 2.5 meters',
+      'Features': 'Remote Relay Engine Kill, Anti-Tow Alarm, Ignition Detect'
+    },
+    compatibility: [
+      { brandId: 'universal', brandName: 'All Brands', modelId: 'all_models', modelName: 'Universal Fitment', yearStart: 2010, yearEnd: 2026, universal: true }
+    ],
+    universalFit: true,
+    tags: ['GPS Tracker', 'Anti Theft', 'Electronics', 'Universal', 'Security'],
+    isFeatured: true,
+    isBestseller: false,
+    isNewArrival: false,
+    status: 'ACTIVE',
+    warranty: '2 Years Replacement Warranty',
+    deliveryDays: 2,
+    createdAt: '2026-01-24T10:00:00.000Z',
+    updatedAt: '2026-02-15T12:00:00.000Z'
+  }
+];
+
+export const SEED_COUPONS: Coupon[] = [
+  {
+    id: 'coup_car10',
+    code: 'CAR10',
+    discountType: 'PERCENTAGE',
+    discountValue: 10,
+    minOrderAmount: 2000,
+    maxDiscountAmount: 500,
+    startDate: '2026-01-01T00:00:00.000Z',
+    expiryDate: '2027-12-31T23:59:59.000Z',
+    usageLimit: 10000,
+    usedCount: 245,
+    isActive: true,
+    description: 'Get 10% instant discount up to ₹500 on orders above ₹2,000'
+  },
+  {
+    id: 'coup_first500',
+    code: 'FIRST500',
+    discountType: 'FLAT',
+    discountValue: 500,
+    minOrderAmount: 2500,
+    maxDiscountAmount: 500,
+    startDate: '2026-01-01T00:00:00.000Z',
+    expiryDate: '2027-12-31T23:59:59.000Z',
+    usageLimit: 5000,
+    usedCount: 88,
+    isActive: true,
+    description: 'Flat ₹500 off on your order above ₹2,500'
+  },
+  {
+    id: 'coup_speed20',
+    code: 'SPEED20',
+    discountType: 'PERCENTAGE',
+    discountValue: 20,
+    minOrderAmount: 4000,
+    maxDiscountAmount: 1000,
+    startDate: '2026-01-01T00:00:00.000Z',
+    expiryDate: '2027-12-31T23:59:59.000Z',
+    usageLimit: 2000,
+    usedCount: 112,
+    isActive: true,
+    description: '20% off up to ₹1,000 on premium car gear above ₹4,000'
+  },
+  {
+    id: 'coup_apexvip',
+    code: 'APEXVIP',
+    discountType: 'PERCENTAGE',
+    discountValue: 15,
+    minOrderAmount: 3000,
+    maxDiscountAmount: 800,
+    startDate: '2026-01-01T00:00:00.000Z',
+    expiryDate: '2027-12-31T23:59:59.000Z',
+    usageLimit: 1000,
+    usedCount: 45,
+    isActive: true,
+    description: 'Exclusive 15% VIP member discount up to ₹800'
+  }
+];
+
+export const SEED_REVIEWS: Review[] = [
+  {
+    id: 'rev_1',
+    productId: 'prod_creta_7d_mats',
+    userId: 'user_cust_1',
+    userName: 'Vikram Malhotra',
+    rating: 5,
+    title: 'Flawless fit on my 2024 Creta SX(O)',
+    comment: 'The laser measurements are spot-on! No gaps on the dead pedal or side sills. The extra curly grass mat holds dirt and sand perfectly after beach trips. Very premium feel.',
+    verifiedPurchase: true,
+    helpfulCount: 38,
+    status: 'APPROVED',
+    createdAt: '2026-02-10T14:30:00.000Z'
+  },
+  {
+    id: 'rev_2',
+    productId: 'prod_creta_7d_mats',
+    userId: 'user_cust_2',
+    userName: 'Rahul Deshmukh',
+    rating: 5,
+    title: 'Worth every rupee',
+    comment: 'Installed them myself in 10 minutes. The metallic heel pad provides great grip under wet shoes.',
+    verifiedPurchase: true,
+    helpfulCount: 19,
+    status: 'APPROVED',
+    createdAt: '2026-02-12T16:00:00.000Z'
+  },
+  {
+    id: 'rev_3',
+    productId: 'prod_4k_dual_dashcam_pro',
+    userId: 'user_cust_1',
+    userName: 'Ananya Sharma',
+    rating: 5,
+    title: 'Crystal clear night footage!',
+    comment: 'License plates are completely legible even on dark highways with high beam glare thanks to the Sony Starvis 2 sensor. 5GHz Wi-Fi downloads video clips to iPhone in seconds.',
+    verifiedPurchase: true,
+    helpfulCount: 52,
+    status: 'APPROVED',
+    createdAt: '2026-02-14T11:20:00.000Z'
+  },
+  {
+    id: 'rev_4',
+    productId: 'prod_nappa_leather_seat_creta',
+    userId: 'user_cust_3',
+    userName: 'Sanjay Nair',
+    rating: 5,
+    title: 'Feels like a ₹50 Lakh luxury SUV interior',
+    comment: 'The red contrast stitching and perforated leather look stunning on my Creta. The side airbag test certification gave me full peace of mind.',
+    verifiedPurchase: true,
+    helpfulCount: 27,
+    status: 'APPROVED',
+    createdAt: '2026-02-18T10:00:00.000Z'
+  }
+];
+
+export async function createDemoUsers(): Promise<User[]> {
+  const adminHash = await bcrypt.hash('Admin123!', 10);
+  const customerHash = await bcrypt.hash('Customer123!', 10);
+
+  return [
+    {
+      id: 'user_admin_demo',
+      name: 'AutoApex Administrator',
+      email: 'admin@example.com',
+      phone: '+91 98765 43210',
+      passwordHash: adminHash,
+      role: 'ADMIN',
+      createdAt: '2026-01-01T00:00:00.000Z'
+    },
+    {
+      id: 'user_customer_demo',
+      name: 'Rohan Sharma',
+      email: 'customer@example.com',
+      phone: '+91 91234 56789',
+      passwordHash: customerHash,
+      role: 'CUSTOMER',
+      createdAt: '2026-01-05T00:00:00.000Z',
+      defaultAddressId: 'addr_demo_1'
+    }
+  ];
+}
