@@ -121,12 +121,12 @@ export const OrderDetailsView: React.FC<OrderDetailsViewProps> = ({
         </div>
 
         {/* Action Controls & Carrier Summary */}
-        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
           {/* Download Invoice Button */}
           <button
             onClick={handleDownloadInvoice}
             disabled={isDownloadingInvoice}
-            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm border ${
+            className={`flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm border ${
               downloadSuccess
                 ? 'bg-emerald-600 border-emerald-600 text-white shadow-emerald-500/20'
                 : 'bg-white hover:bg-zinc-50 text-zinc-900 border-zinc-200 hover:border-zinc-300 dark:bg-zinc-900 dark:hover:bg-zinc-850 dark:text-zinc-100 dark:border-zinc-800'
@@ -149,7 +149,7 @@ export const OrderDetailsView: React.FC<OrderDetailsViewProps> = ({
           {/* Quick Track Order CTA Button */}
           <button
             onClick={() => setActiveTab('tracking')}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-sm ${
+            className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm ${
               activeTab === 'tracking'
                 ? 'bg-red-600 text-white shadow-red-500/25 ring-2 ring-red-600/30'
                 : 'bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-white dark:hover:bg-zinc-100 dark:text-zinc-900'
@@ -178,11 +178,11 @@ export const OrderDetailsView: React.FC<OrderDetailsViewProps> = ({
       </div>
 
       {/* 2. Mode Navigation Tabs */}
-      <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-1">
-        <div className="flex items-center gap-2">
+      <div className="overflow-x-auto no-scrollbar scroll-smooth flex items-center justify-between border-b border-zinc-200 dark:border-zinc-850 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           <button
             onClick={() => setActiveTab('all')}
-            className={`px-3.5 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer flex items-center gap-2 ${
+            className={`px-3 sm:px-3.5 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 sm:gap-2 ${
               activeTab === 'all'
                 ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-sm'
                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-850'
@@ -193,7 +193,7 @@ export const OrderDetailsView: React.FC<OrderDetailsViewProps> = ({
 
           <button
             onClick={() => setActiveTab('tracking')}
-            className={`px-3.5 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer flex items-center gap-2 ${
+            className={`px-3 sm:px-3.5 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 sm:gap-2 ${
               activeTab === 'tracking'
                 ? 'bg-red-600 text-white shadow-sm shadow-red-500/20'
                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-850'
@@ -206,7 +206,7 @@ export const OrderDetailsView: React.FC<OrderDetailsViewProps> = ({
 
           <button
             onClick={() => setActiveTab('items')}
-            className={`px-3.5 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer flex items-center gap-2 ${
+            className={`px-3 sm:px-3.5 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 sm:gap-2 ${
               activeTab === 'items'
                 ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-sm'
                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-850'
@@ -217,7 +217,7 @@ export const OrderDetailsView: React.FC<OrderDetailsViewProps> = ({
           </button>
         </div>
 
-        <span className="text-[11px] text-zinc-400 hidden sm:inline font-mono">
+        <span className="text-[11px] text-zinc-400 hidden lg:inline font-mono shrink-0">
           AWB: {order.trackingNumber}
         </span>
       </div>
@@ -258,30 +258,30 @@ export const OrderDetailsView: React.FC<OrderDetailsViewProps> = ({
                 <div
                   key={idx}
                   onClick={() => onNavigateProduct(item.productId)}
-                  className="p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 hover:border-zinc-300 dark:hover:border-zinc-800 rounded-xl flex items-center justify-between gap-4 cursor-pointer transition-colors shadow-sm group"
+                  className="p-3 sm:p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 hover:border-zinc-300 dark:hover:border-zinc-800 rounded-xl flex items-center justify-between gap-3 sm:gap-4 cursor-pointer transition-colors shadow-sm group"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
                     <img
                       src={item.image}
                       alt={item.name}
-                      className="w-14 h-14 rounded-lg object-cover bg-zinc-100 dark:bg-zinc-950 shrink-0 border border-zinc-200 dark:border-transparent group-hover:scale-105 transition-transform"
+                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg object-cover bg-zinc-100 dark:bg-zinc-950 shrink-0 border border-zinc-200 dark:border-transparent group-hover:scale-105 transition-transform"
                     />
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <h4 className="text-xs font-bold text-zinc-900 dark:text-white line-clamp-1 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
                         {item.name}
                       </h4>
-                      <span className="text-[11px] text-zinc-500 font-mono block">SKU: {item.sku}</span>
+                      <span className="text-[10px] sm:text-[11px] text-zinc-500 font-mono block">SKU: {item.sku}</span>
                       {item.vehicleCompatibility && (
-                        <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-1 mt-0.5">
-                          <ShieldCheck className="w-3 h-3" />
-                          {item.vehicleCompatibility}
+                        <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-1 mt-0.5 truncate">
+                          <ShieldCheck className="w-3 h-3 shrink-0" />
+                          <span className="truncate">{item.vehicleCompatibility}</span>
                         </span>
                       )}
                     </div>
                   </div>
 
-                  <div className="text-right shrink-0">
-                    <span className="text-xs font-bold text-zinc-950 dark:text-white tabular-nums">
+                  <div className="text-right shrink-0 pl-2">
+                    <span className="text-xs sm:text-sm font-bold text-zinc-950 dark:text-white tabular-nums">
                       ₹{(item.price * item.quantity).toLocaleString()}
                     </span>
                     <span className="text-[10px] text-zinc-500 block">Qty: {item.quantity}</span>

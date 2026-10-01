@@ -214,7 +214,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToStore }) => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-zinc-200 dark:border-zinc-850 text-xs font-semibold">
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar whitespace-nowrap pb-2 border-b border-zinc-200 dark:border-zinc-850 text-xs font-semibold">
         {[
           { id: 'analytics', label: 'Dashboard & Revenue', icon: LayoutDashboard },
           { id: 'products', label: `Products (${products.length})`, icon: Package },
@@ -498,59 +498,61 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToStore }) => {
           <h3 className="text-xs font-bold text-zinc-950 dark:text-white uppercase tracking-wider">Live Inventory Controller</h3>
 
           <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 rounded-2xl overflow-hidden shadow-sm">
-            <table className="w-full text-xs text-left">
-              <thead className="bg-zinc-50 dark:bg-zinc-950 text-zinc-500 dark:text-zinc-400 uppercase text-[10px] tracking-wider border-b border-zinc-200 dark:border-zinc-850">
-                <tr>
-                  <th className="p-3">Product</th>
-                  <th className="p-3">SKU</th>
-                  <th className="p-3">Stock Units</th>
-                  <th className="p-3">Threshold</th>
-                  <th className="p-3 text-right">Quick Stock Adjustment</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-850">
-                {products.map(prod => (
-                  <tr key={prod.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-850/50 transition-colors">
-                    <td className="p-3 font-semibold text-zinc-900 dark:text-white">{prod.name}</td>
-                    <td className="p-3 font-mono text-zinc-500 dark:text-zinc-400">{prod.sku}</td>
-                    <td className="p-3">
-                      <span className={`font-bold tabular-nums ${prod.stock <= prod.lowStockThreshold ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
-                        {prod.stock} units
-                      </span>
-                    </td>
-                    <td className="p-3 text-zinc-500 tabular-nums">{prod.lowStockThreshold}</td>
-                    <td className="p-3 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          onClick={() => handleStockAdjust(prod, -5)}
-                          className="px-2 py-0.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-300 rounded text-xs transition-colors"
-                        >
-                          -5
-                        </button>
-                        <button
-                          onClick={() => handleStockAdjust(prod, -1)}
-                          className="px-2 py-0.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-300 rounded text-xs transition-colors"
-                        >
-                          -1
-                        </button>
-                        <button
-                          onClick={() => handleStockAdjust(prod, 1)}
-                          className="px-2 py-0.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-300 rounded text-xs transition-colors"
-                        >
-                          +1
-                        </button>
-                        <button
-                          onClick={() => handleStockAdjust(prod, 10)}
-                          className="px-2 py-0.5 bg-zinc-100 hover:bg-zinc-200 text-emerald-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-emerald-400 rounded text-xs font-bold transition-colors"
-                        >
-                          +10
-                        </button>
-                      </div>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs text-left">
+                <thead className="bg-zinc-50 dark:bg-zinc-950 text-zinc-500 dark:text-zinc-400 uppercase text-[10px] tracking-wider border-b border-zinc-200 dark:border-zinc-850">
+                  <tr>
+                    <th className="p-3">Product</th>
+                    <th className="p-3">SKU</th>
+                    <th className="p-3">Stock Units</th>
+                    <th className="p-3">Threshold</th>
+                    <th className="p-3 text-right">Quick Stock Adjustment</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-zinc-100 dark:divide-zinc-850">
+                  {products.map(prod => (
+                    <tr key={prod.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-850/50 transition-colors">
+                      <td className="p-3 font-semibold text-zinc-900 dark:text-white">{prod.name}</td>
+                      <td className="p-3 font-mono text-zinc-500 dark:text-zinc-400">{prod.sku}</td>
+                      <td className="p-3">
+                        <span className={`font-bold tabular-nums ${prod.stock <= prod.lowStockThreshold ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                          {prod.stock} units
+                        </span>
+                      </td>
+                      <td className="p-3 text-zinc-500 tabular-nums">{prod.lowStockThreshold}</td>
+                      <td className="p-3 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => handleStockAdjust(prod, -5)}
+                            className="px-2 py-0.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-300 rounded text-xs transition-colors"
+                          >
+                            -5
+                          </button>
+                          <button
+                            onClick={() => handleStockAdjust(prod, -1)}
+                            className="px-2 py-0.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-300 rounded text-xs transition-colors"
+                          >
+                            -1
+                          </button>
+                          <button
+                            onClick={() => handleStockAdjust(prod, 1)}
+                            className="px-2 py-0.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-300 rounded text-xs transition-colors"
+                          >
+                            +1
+                          </button>
+                          <button
+                            onClick={() => handleStockAdjust(prod, 10)}
+                            className="px-2 py-0.5 bg-zinc-100 hover:bg-zinc-200 text-emerald-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-emerald-400 rounded text-xs font-bold transition-colors"
+                          >
+                            +10
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
@@ -620,7 +622,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToStore }) => {
           <div onClick={() => setShowAddProductModal(false)} className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
           <form
             onSubmit={handleCreateProduct}
-            className="relative w-full max-w-lg bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 space-y-4 text-xs shadow-2xl transition-colors"
+            className="relative w-full max-w-lg bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 sm:p-6 space-y-4 text-xs shadow-2xl transition-colors max-h-[90vh] overflow-y-auto"
           >
             <div className="flex items-center justify-between pb-2 border-b border-zinc-200 dark:border-zinc-800">
               <h3 className="text-sm font-bold text-zinc-950 dark:text-white uppercase tracking-wider">Create New Accessory</h3>
@@ -641,7 +643,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToStore }) => {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="text-zinc-600 dark:text-zinc-400 block mb-1">Category</label>
                 <select
@@ -666,7 +668,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToStore }) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label className="text-zinc-600 dark:text-zinc-400 block mb-1">Selling Price (₹)</label>
                 <input
@@ -715,7 +717,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToStore }) => {
           <div onClick={() => setShowAddCouponModal(false)} className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
           <form
             onSubmit={handleCreateCoupon}
-            className="relative w-full max-w-sm bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 space-y-3 text-xs shadow-2xl transition-colors"
+            className="relative w-full max-w-sm bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 sm:p-6 space-y-3 text-xs shadow-2xl transition-colors max-h-[90vh] overflow-y-auto"
           >
             <div className="flex items-center justify-between pb-2 border-b border-zinc-200 dark:border-zinc-800">
               <h3 className="text-sm font-bold text-zinc-950 dark:text-white uppercase tracking-wider">Create Discount Code</h3>
@@ -736,7 +738,7 @@ export const AdminView: React.FC<AdminViewProps> = ({ onBackToStore }) => {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <div>
                 <label className="text-zinc-600 dark:text-zinc-400 block mb-1">Discount (%)</label>
                 <input

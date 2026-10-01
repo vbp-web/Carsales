@@ -308,21 +308,21 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
           </div>
 
           {/* Delivery & Warranty Guarantees */}
-          <div className="grid grid-cols-2 gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-850 text-xs text-zinc-600 dark:text-zinc-400">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-850 text-xs text-zinc-600 dark:text-zinc-400">
             <div className="flex items-center gap-2">
-              <Truck className="w-4 h-4 text-zinc-700 dark:text-zinc-300" />
+              <Truck className="w-4 h-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
               <span>Delivered in {product.deliveryDays} business days</span>
             </div>
             <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-zinc-700 dark:text-zinc-300" />
+              <Shield className="w-4 h-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
               <span>{product.warranty}</span>
             </div>
             <div className="flex items-center gap-2">
-              <RotateCcw className="w-4 h-4 text-zinc-700 dark:text-zinc-300" />
+              <RotateCcw className="w-4 h-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
               <span>7-Day Return Guarantee</span>
             </div>
             <div className="flex items-center gap-2">
-              <Lock className="w-4 h-4 text-zinc-700 dark:text-zinc-300" />
+              <Lock className="w-4 h-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
               <span>100% Secure Checkout</span>
             </div>
           </div>
@@ -331,10 +331,10 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
 
       {/* Tabs */}
       <div className="border-t border-zinc-200 dark:border-zinc-850 pt-10">
-        <div className="flex items-center gap-6 border-b border-zinc-200 dark:border-zinc-850 pb-4 text-sm font-semibold">
+        <div className="flex items-center gap-3 sm:gap-6 border-b border-zinc-200 dark:border-zinc-850 pb-3 text-xs sm:text-sm font-semibold overflow-x-auto no-scrollbar whitespace-nowrap">
           <button
             onClick={() => setActiveTab('specs')}
-            className={`pb-2 transition-colors cursor-pointer ${
+            className={`pb-2 transition-colors cursor-pointer shrink-0 ${
               activeTab === 'specs'
                 ? 'text-zinc-950 dark:text-white border-b-2 border-red-500'
                 : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'
@@ -344,7 +344,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('compatibility')}
-            className={`pb-2 transition-colors cursor-pointer ${
+            className={`pb-2 transition-colors cursor-pointer shrink-0 ${
               activeTab === 'compatibility'
                 ? 'text-zinc-950 dark:text-white border-b-2 border-red-500'
                 : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'
@@ -354,7 +354,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('reviews')}
-            className={`pb-2 transition-colors cursor-pointer ${
+            className={`pb-2 transition-colors cursor-pointer shrink-0 ${
               activeTab === 'reviews'
                 ? 'text-zinc-950 dark:text-white border-b-2 border-red-500'
                 : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'

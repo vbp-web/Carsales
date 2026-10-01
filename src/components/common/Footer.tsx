@@ -10,7 +10,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     <footer className="w-full bg-zinc-100 dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-850 mt-20 text-zinc-600 dark:text-zinc-400 text-xs transition-colors duration-200">
       {/* Trust & Guarantee Banner */}
       <div className="border-b border-zinc-200 dark:border-zinc-850 bg-white/70 dark:bg-zinc-900/40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-850 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-red-600 dark:text-red-500 shrink-0">
               <ShieldCheck className="w-5 h-5" />
@@ -154,9 +154,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
       {/* Copyright Bar */}
       <div className="border-t border-zinc-200 dark:border-zinc-850 py-5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-zinc-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-zinc-500 text-center sm:text-left">
           <p>© 2026 AutoApex Technologies Ltd. All rights reserved.</p>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
             <span>Payment Partner: Razorpay</span>
             <span>·</span>
             <span>Logistics: Delhivery Express</span>

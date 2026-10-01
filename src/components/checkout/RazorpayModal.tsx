@@ -77,9 +77,9 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
       <div onClick={onClose} className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-lg bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 transition-colors">
+      <div className="relative w-full max-w-lg bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 transition-colors max-h-[90vh] overflow-y-auto">
         {/* Razorpay Brand Header */}
-        <div className="bg-[#0c2340] px-6 py-4 flex items-center justify-between border-b border-blue-900/40">
+        <div className="bg-[#0c2340] px-5 sm:px-6 py-4 flex items-center justify-between border-b border-blue-900/40">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-black text-white text-sm tracking-tighter">
               R
@@ -133,10 +133,10 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
         </div>
 
         {/* Method Panels */}
-        <div className="p-6 space-y-4">
+        <div className="p-4 sm:p-6 space-y-4">
           {activeTab === 'upi' && (
             <div className="space-y-4">
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {['Google Pay', 'PhonePe', 'Paytm', 'BHIM UPI'].map(app => (
                   <div
                     key={app}
@@ -230,12 +230,12 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
         </div>
 
         {/* Action Button */}
-        <div className="p-6 bg-zinc-50 dark:bg-zinc-900/80 border-t border-zinc-200 dark:border-zinc-850 flex items-center justify-between gap-4">
+        <div className="p-4 sm:p-6 bg-zinc-50 dark:bg-zinc-900/80 border-t border-zinc-200 dark:border-zinc-850 flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3">
           <button
             type="button"
             onClick={onClose}
             disabled={processing}
-            className="text-xs text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white px-3 py-2 rounded-lg transition-colors cursor-pointer"
+            className="w-full sm:w-auto text-xs text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white px-3 py-2.5 rounded-lg transition-colors cursor-pointer text-center"
           >
             Cancel
           </button>
@@ -244,7 +244,7 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
             type="button"
             onClick={handleSimulatePayment}
             disabled={processing}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 px-6 rounded-xl flex items-center gap-2 transition-all cursor-pointer shadow-lg shadow-emerald-600/20 disabled:opacity-50"
+            className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-emerald-600/20 disabled:opacity-50"
           >
             {processing ? (
               <>

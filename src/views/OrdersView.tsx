@@ -102,17 +102,17 @@ export const OrdersView: React.FC<OrdersViewProps> = ({ onSelectOrder, onNavigat
                 </div>
               </div>
 
-              {/* Items Preview */}
-              <div className="flex flex-wrap items-center justify-between gap-4">
+              {/* Items Preview & Actions */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3 overflow-x-auto py-1">
                   {order.items.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
+                    <div key={idx} className="flex items-center gap-2 shrink-0">
                       <img
                         src={item.image}
                         alt={item.name}
                         className="w-12 h-12 rounded-lg object-cover bg-zinc-100 dark:bg-zinc-950 shrink-0 border border-zinc-200 dark:border-transparent"
                       />
-                      <div className="max-w-[200px] text-xs">
+                      <div className="max-w-[180px] sm:max-w-[200px] text-xs">
                         <p className="font-semibold text-zinc-800 dark:text-zinc-200 truncate">{item.name}</p>
                         <p className="text-[10px] text-zinc-500">Qty: {item.quantity}</p>
                       </div>
@@ -120,7 +120,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({ onSelectOrder, onNavigat
                   ))}
                 </div>
 
-                <div className="flex items-center gap-3 shrink-0">
+                <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-zinc-100 dark:border-zinc-800/80">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -130,7 +130,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({ onSelectOrder, onNavigat
                     title="Download Tax Invoice PDF"
                   >
                     <Download className="w-3.5 h-3.5 text-red-600 dark:text-red-500" />
-                    <span className="hidden sm:inline">Invoice</span>
+                    <span>Invoice</span>
                   </button>
 
                   <div className="flex items-center gap-1.5 text-xs font-semibold text-red-600 dark:text-red-500 group-hover:text-red-700 dark:group-hover:text-red-400">

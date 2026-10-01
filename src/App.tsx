@@ -126,6 +126,7 @@ function AppContent() {
             onNavigateWishlist={() => navigate('catalog')}
             onNavigateAdmin={() => navigate('admin')}
             onOpenVehicleModal={() => setIsVehicleModalOpen(true)}
+            onNavigateAuth={() => navigate('auth')}
           />
         )}
 

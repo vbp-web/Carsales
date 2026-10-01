@@ -20,15 +20,17 @@ interface AccountViewProps {
   onNavigateWishlist: () => void;
   onNavigateAdmin: () => void;
   onOpenVehicleModal: () => void;
+  onNavigateAuth?: () => void;
 }
 
 export const AccountView: React.FC<AccountViewProps> = ({
   onNavigateOrders,
   onNavigateWishlist,
   onNavigateAdmin,
-  onOpenVehicleModal
+  onOpenVehicleModal,
+  onNavigateAuth
 }) => {
-  const { user, addresses, logout, deleteAddress, createAddress, quickLoginDemo } = useAuth();
+  const { user, addresses, logout, deleteAddress, createAddress } = useAuth();
   const { wishlist } = useWishlist();
   const { selectedVehicle } = useVehicle();
 
@@ -59,23 +61,22 @@ export const AccountView: React.FC<AccountViewProps> = ({
 
   if (!user) {
     return (
-      <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
-        <h2 className="text-xl font-bold text-zinc-950 dark:text-white">Sign In to AutoApex</h2>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">Manage orders, delivery addresses, and configured vehicles.</p>
-        <div className="flex flex-col gap-2 pt-2">
-          <button
-            onClick={() => quickLoginDemo('CUSTOMER')}
-            className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-semibold text-xs rounded-xl shadow-md shadow-red-500/20"
-          >
-            Sign in as Demo Customer
-          </button>
-          <button
-            onClick={() => quickLoginDemo('ADMIN')}
-            className="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-xs rounded-xl"
-          >
-            Sign in as Demo Administrator
-          </button>
+      <div className="max-w-md mx-auto px-4 py-16 sm:py-24 text-center space-y-5">
+        <div className="w-14 h-14 rounded-2xl bg-red-50 text-red-600 dark:bg-red-950/60 dark:text-red-500 border border-red-200 dark:border-red-900 flex items-center justify-center mx-auto shadow-sm">
+          <UserIcon className="w-7 h-7" />
         </div>
+        <div className="space-y-1.5">
+          <h2 className="text-xl sm:text-2xl font-bold text-zinc-950 dark:text-white font-display">Sign In to AutoApex</h2>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto">
+            Access your verified vehicle garage, saved shipping destinations, and real-time package tracking.
+          </p>
+        </div>
+        <button
+          onClick={onNavigateAuth}
+          className="w-full py-3 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-red-500/20 transition-all cursor-pointer"
+        >
+          Sign In / Create Account
+        </button>
       </div>
     );
   }
@@ -165,10 +166,10 @@ export const AccountView: React.FC<AccountViewProps> = ({
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-4 border-b border-zinc-200 dark:border-zinc-850 pb-3 text-xs font-semibold">
+      <div className="flex gap-2 sm:gap-4 border-b border-zinc-200 dark:border-zinc-850 pb-3 text-xs font-semibold overflow-x-auto no-scrollbar whitespace-nowrap">
         <button
           onClick={() => setActiveTab('profile')}
-          className={`pb-2 transition-colors cursor-pointer ${
+          className={`pb-2 px-1 transition-colors cursor-pointer shrink-0 ${
             activeTab === 'profile'
               ? 'text-zinc-950 dark:text-white border-b-2 border-red-500'
               : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'
@@ -178,7 +179,7 @@ export const AccountView: React.FC<AccountViewProps> = ({
         </button>
         <button
           onClick={() => setActiveTab('addresses')}
-          className={`pb-2 transition-colors cursor-pointer ${
+          className={`pb-2 px-1 transition-colors cursor-pointer shrink-0 ${
             activeTab === 'addresses'
               ? 'text-zinc-950 dark:text-white border-b-2 border-red-500'
               : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'
@@ -188,7 +189,7 @@ export const AccountView: React.FC<AccountViewProps> = ({
         </button>
         <button
           onClick={() => setActiveTab('garage')}
-          className={`pb-2 transition-colors cursor-pointer ${
+          className={`pb-2 px-1 transition-colors cursor-pointer shrink-0 ${
             activeTab === 'garage'
               ? 'text-zinc-950 dark:text-white border-b-2 border-red-500'
               : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'
@@ -200,15 +201,15 @@ export const AccountView: React.FC<AccountViewProps> = ({
 
       {/* Tab 1: Profile */}
       {activeTab === 'profile' && (
-        <div className="p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 rounded-2xl space-y-4 max-w-xl text-xs shadow-sm">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="p-5 sm:p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 rounded-2xl space-y-4 max-w-xl text-xs shadow-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <span className="text-zinc-500 block mb-1">Name</span>
               <p className="font-semibold text-zinc-900 dark:text-white">{user.name}</p>
             </div>
             <div>
               <span className="text-zinc-500 block mb-1">Email Address</span>
-              <p className="font-semibold text-zinc-900 dark:text-white">{user.email}</p>
+              <p className="font-semibold text-zinc-900 dark:text-white break-all">{user.email}</p>
             </div>
             <div>
               <span className="text-zinc-500 block mb-1">Phone Number</span>
@@ -236,7 +237,7 @@ export const AccountView: React.FC<AccountViewProps> = ({
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {addresses.map(addr => (
               <div key={addr.id} className="p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 rounded-xl text-xs space-y-2 relative shadow-sm">
                 <div className="flex items-center justify-between">
@@ -261,7 +262,7 @@ export const AccountView: React.FC<AccountViewProps> = ({
           {showAddModal && (
             <form onSubmit={handleAddAddress} className="p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl space-y-3 max-w-lg shadow-sm">
               <h4 className="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-wider">New Shipping Destination</h4>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <input
                   type="text"
                   placeholder="Full Name"
@@ -287,7 +288,7 @@ export const AccountView: React.FC<AccountViewProps> = ({
                 required
                 className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded px-3 py-1.5 text-xs text-zinc-900 dark:text-white"
               />
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <input
                   type="text"
                   placeholder="City"

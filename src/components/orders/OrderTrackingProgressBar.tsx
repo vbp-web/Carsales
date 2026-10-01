@@ -358,90 +358,92 @@ export const OrderTrackingProgressBar: React.FC<OrderTrackingProgressBarProps> =
         </div>
 
         {/* The Continuous Horizontal Visual Progress Rail */}
-        <div className="relative pt-6 pb-2">
-          {/* Base Track */}
-          <div className="h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-full w-full overflow-hidden relative">
-            {/* Active Filled Gradient Rail */}
-            <div
-              className={`h-full rounded-full transition-all duration-700 ease-out ${
-                isDelivered
-                  ? 'bg-gradient-to-r from-red-600 via-orange-500 to-emerald-500'
-                  : 'bg-gradient-to-r from-red-600 via-red-500 to-orange-500'
-              }`}
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
-
-          {/* Gliding Vehicle Indicator */}
-          {!isCancelled && (
-            <div
-              className="absolute top-1 -translate-x-1/2 transition-all duration-700 ease-out z-20 pointer-events-none"
-              style={{ left: `${progressPercent}%` }}
-            >
-              <div className="relative flex items-center justify-center">
-                <div className="w-8 h-8 rounded-full bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-2 border-red-600 flex items-center justify-center shadow-lg shadow-red-600/30">
-                  <Truck className="w-4 h-4" />
-                </div>
-                {/* Glowing vehicle beacon ping */}
-                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
-              </div>
+        <div className="overflow-x-auto pb-3 pt-6 -mx-2 px-2 sm:mx-0 sm:px-0">
+          <div className="min-w-[560px] sm:min-w-full relative pb-2">
+            {/* Base Track */}
+            <div className="h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-full w-full overflow-hidden relative">
+              {/* Active Filled Gradient Rail */}
+              <div
+                className={`h-full rounded-full transition-all duration-700 ease-out ${
+                  isDelivered
+                    ? 'bg-gradient-to-r from-red-600 via-orange-500 to-emerald-500'
+                    : 'bg-gradient-to-r from-red-600 via-red-500 to-orange-500'
+                }`}
+                style={{ width: `${progressPercent}%` }}
+              />
             </div>
-          )}
 
-          {/* Milestone Step Nodes */}
-          <div className="grid grid-cols-7 mt-4 gap-1 relative z-10">
-            {STAGES.map((stage, idx) => {
-              const Icon = stage.icon;
-              const isPast = idx < activeIndex;
-              const isCurrent = idx === activeIndex;
-              const isFuture = idx > activeIndex;
-
-              return (
-                <div key={stage.key} className="flex flex-col items-center text-center group">
-                  {/* Node Circle */}
-                  <div
-                    className={`relative w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all duration-300 ${
-                      isPast
-                        ? 'bg-emerald-600 text-white shadow-sm'
-                        : isCurrent
-                        ? 'bg-red-600 text-white ring-4 ring-red-500/25 dark:ring-red-500/30 shadow-md shadow-red-500/40 scale-105'
-                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-600 border border-zinc-200 dark:border-zinc-700'
-                    }`}
-                  >
-                    {isPast ? (
-                      <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" />
-                    ) : (
-                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    )}
-
-                    {/* Live radar ring on current step */}
-                    {isCurrent && !isDelivered && (
-                      <span className="absolute -inset-1 rounded-full border-2 border-red-500/60 animate-ping pointer-events-none" />
-                    )}
+            {/* Gliding Vehicle Indicator */}
+            {!isCancelled && (
+              <div
+                className="absolute top-1 -translate-x-1/2 transition-all duration-700 ease-out z-20 pointer-events-none"
+                style={{ left: `${progressPercent}%` }}
+              >
+                <div className="relative flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-2 border-red-600 flex items-center justify-center shadow-lg shadow-red-600/30">
+                    <Truck className="w-4 h-4" />
                   </div>
+                  {/* Glowing vehicle beacon ping */}
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
+                </div>
+              </div>
+            )}
 
-                  {/* Stage Label */}
-                  <div className="mt-2 space-y-0.5 max-w-[70px] sm:max-w-[85px]">
-                    <span
-                      className={`block text-[10px] sm:text-[11px] font-semibold leading-tight truncate sm:whitespace-normal ${
-                        isCurrent
-                          ? 'text-red-600 dark:text-red-400 font-bold'
-                          : isPast
-                          ? 'text-zinc-900 dark:text-zinc-200'
-                          : 'text-zinc-400 dark:text-zinc-500'
+            {/* Milestone Step Nodes */}
+            <div className="grid grid-cols-7 mt-4 gap-1 relative z-10">
+              {STAGES.map((stage, idx) => {
+                const Icon = stage.icon;
+                const isPast = idx < activeIndex;
+                const isCurrent = idx === activeIndex;
+                const isFuture = idx > activeIndex;
+
+                return (
+                  <div key={stage.key} className="flex flex-col items-center text-center group">
+                    {/* Node Circle */}
+                    <div
+                      className={`relative w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all duration-300 ${
+                        isPast
+                          ? 'bg-emerald-600 text-white shadow-sm'
+                          : isCurrent
+                          ? 'bg-red-600 text-white ring-4 ring-red-500/25 dark:ring-red-500/30 shadow-md shadow-red-500/40 scale-105'
+                          : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-600 border border-zinc-200 dark:border-zinc-700'
                       }`}
                     >
-                      {stage.shortLabel}
-                    </span>
+                      {isPast ? (
+                        <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" />
+                      ) : (
+                        <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      )}
 
-                    {/* Status badge on desktop */}
-                    <span className="hidden sm:inline-block text-[9px] font-mono text-zinc-400 dark:text-zinc-500">
-                      {isPast ? 'Done' : isCurrent ? 'Active' : 'Pending'}
-                    </span>
+                      {/* Live radar ring on current step */}
+                      {isCurrent && !isDelivered && (
+                        <span className="absolute -inset-1 rounded-full border-2 border-red-500/60 animate-ping pointer-events-none" />
+                      )}
+                    </div>
+
+                    {/* Stage Label */}
+                    <div className="mt-2 space-y-0.5 max-w-[75px] sm:max-w-[85px]">
+                      <span
+                        className={`block text-[10px] sm:text-[11px] font-semibold leading-tight whitespace-normal ${
+                          isCurrent
+                            ? 'text-red-600 dark:text-red-400 font-bold'
+                            : isPast
+                            ? 'text-zinc-900 dark:text-zinc-200'
+                            : 'text-zinc-400 dark:text-zinc-500'
+                        }`}
+                      >
+                        {stage.shortLabel}
+                      </span>
+
+                      {/* Status badge on desktop */}
+                      <span className="hidden sm:inline-block text-[9px] font-mono text-zinc-400 dark:text-zinc-500">
+                        {isPast ? 'Done' : isCurrent ? 'Active' : 'Pending'}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

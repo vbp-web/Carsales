@@ -146,7 +146,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenV
           {/* Search bar toggle/input */}
           <div className="relative">
             {showSearchInput ? (
-              <form onSubmit={handleSearchSubmit} className="absolute right-0 top-1/2 -translate-y-1/2 w-64 z-50">
+              <form onSubmit={handleSearchSubmit} className="absolute right-0 top-1/2 -translate-y-1/2 w-[calc(100vw-5rem)] max-w-xs z-50">
                 <div className="relative">
                   <input
                     type="text"
@@ -290,7 +290,29 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenV
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800 px-4 py-4 space-y-3">
+        <div className="md:hidden bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-850 px-4 py-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-150">
+          {/* Quick Vehicle Config Bar for Mobile */}
+          <div className="p-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Car className="w-4 h-4 text-red-600 dark:text-red-500" />
+              <div className="text-xs">
+                <span className="text-[10px] text-zinc-500 block">Selected Vehicle</span>
+                <span className="font-bold text-zinc-900 dark:text-white">
+                  {selectedVehicle ? `${selectedVehicle.brand} ${selectedVehicle.model}` : 'No vehicle set'}
+                </span>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenVehicleModal();
+              }}
+              className="px-2.5 py-1 bg-white dark:bg-zinc-800 text-xs font-semibold text-zinc-800 dark:text-zinc-200 rounded border border-zinc-200 dark:border-zinc-700 shadow-sm"
+            >
+              {selectedVehicle ? 'Change' : 'Select'}
+            </button>
+          </div>
+
           <button
             onClick={() => {
               onNavigate('home');
@@ -307,7 +329,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenV
             }}
             className="block w-full text-left text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white py-1.5"
           >
-            Shop Catalog
+            Shop Accessories
           </button>
           <button
             onClick={() => {
@@ -327,15 +349,36 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenV
           >
             Coupons & Offers
           </button>
-          {user && (
+          {user ? (
+            <>
+              <button
+                onClick={() => {
+                  onNavigate('account');
+                  setMobileMenuOpen(false);
+                }}
+                className="block w-full text-left text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white py-1.5"
+              >
+                My Profile & Addresses
+              </button>
+              <button
+                onClick={() => {
+                  onNavigate('orders');
+                  setMobileMenuOpen(false);
+                }}
+                className="block w-full text-left text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white py-1.5"
+              >
+                My Orders & Tracking
+              </button>
+            </>
+          ) : (
             <button
               onClick={() => {
-                onNavigate('orders');
+                onNavigate('auth');
                 setMobileMenuOpen(false);
               }}
-              className="block w-full text-left text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white py-1.5"
+              className="w-full text-center py-2.5 bg-red-600 hover:bg-red-500 text-white font-semibold text-xs rounded-xl shadow-md shadow-red-500/20"
             >
-              My Orders & Tracking
+              Sign In to Your Account
             </button>
           )}
           {user?.role === 'ADMIN' && (
@@ -349,7 +392,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate, onOpenV
               Admin Dashboard
             </button>
           )}
-
         </div>
       )}
     </header>

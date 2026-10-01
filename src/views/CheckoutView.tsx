@@ -171,18 +171,11 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onNa
         {/* Left Column */}
         <div className="lg:col-span-7 space-y-6">
           {!user && (
-            <div className="p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl flex items-center justify-between shadow-sm">
+            <div className="p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
               <div>
-                <p className="text-xs text-zinc-900 dark:text-zinc-300 font-semibold">Checking out as Guest or Demo</p>
-                <p className="text-[11px] text-zinc-500">Sign in to save address & view historical tracking</p>
+                <p className="text-xs text-zinc-900 dark:text-zinc-300 font-semibold">Guest Checkout</p>
+                <p className="text-[11px] text-zinc-500">You can complete your purchase as a guest. All order tracking details will be generated on confirmation.</p>
               </div>
-              <button
-                type="button"
-                onClick={() => quickLoginDemo('CUSTOMER')}
-                className="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white font-semibold text-xs rounded-lg shadow-sm"
-              >
-                Quick Customer Sign In
-              </button>
             </div>
           )}
 
@@ -282,7 +275,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onNa
                     />
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <div>
                       <label className="text-[11px] text-zinc-600 dark:text-zinc-400 block mb-1">City</label>
                       <input
