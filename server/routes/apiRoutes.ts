@@ -7,6 +7,8 @@ import {
   requireAdmin,
   optionalAuth,
   generateToken,
+  generateAuthTokens,
+  verifyRefreshToken,
   AuthenticatedRequest
 } from '../middleware/auth.ts';
 import { recommendationService } from '../services/recommendationService.ts';
@@ -39,12 +41,13 @@ router.post('/auth/register', async (req, res: Response) => {
       createdAt: new Date().toISOString()
     });
 
-    const token = generateToken(newUser);
+    const tokens = generateAuthTokens(newUser);
     return res.status(201).json({
       success: true,
       message: 'Account created successfully!',
       data: {
-        token,
+        token: tokens.token,
+        refreshToken: tokens.refreshToken,
         user: {
           id: newUser.id,
           name: newUser.name,
@@ -76,12 +79,13 @@ router.post('/auth/login', async (req, res: Response) => {
       return res.status(401).json({ success: false, message: 'Invalid email or password.' });
     }
 
-    const token = generateToken(user);
+    const tokens = generateAuthTokens(user);
     return res.json({
       success: true,
       message: `Welcome back, ${user.name}!`,
       data: {
-        token,
+        token: tokens.token,
+        refreshToken: tokens.refreshToken,
         user: {
           id: user.id,
           name: user.name,
@@ -94,6 +98,50 @@ router.post('/auth/login', async (req, res: Response) => {
   } catch (err: any) {
     return res.status(500).json({ success: false, message: err.message || 'Login failed.' });
   }
+});
+
+router.post('/auth/refresh', async (req, res: Response) => {
+  try {
+    const refreshToken = req.body?.refreshToken || req.headers['x-refresh-token'];
+    if (!refreshToken || typeof refreshToken !== 'string') {
+      return res.status(400).json({ success: false, message: 'Refresh token is required.' });
+    }
+
+    let decoded: { id: string; email: string; role: 'CUSTOMER' | 'ADMIN' };
+    try {
+      decoded = verifyRefreshToken(refreshToken);
+    } catch {
+      return res.status(401).json({ success: false, message: 'Invalid or expired refresh token. Please sign in again.' });
+    }
+
+    const user = db.findUserById(decoded.id);
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'User account not found. Please sign in again.' });
+    }
+
+    const tokens = generateAuthTokens(user);
+    return res.json({
+      success: true,
+      message: 'Tokens refreshed successfully.',
+      data: {
+        token: tokens.token,
+        refreshToken: tokens.refreshToken,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          role: user.role
+        }
+      }
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, message: err.message || 'Token refresh failed.' });
+  }
+});
+
+router.post('/auth/logout', (_req, res: Response) => {
+  return res.json({ success: true, message: 'Logged out successfully.' });
 });
 
 router.get('/auth/me', requireAuth, (req: AuthenticatedRequest, res: Response) => {

@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { User, Address } from '../types/index.ts';
-import { api } from '../services/api.ts';
+import { api, setAuthTokens, clearAuthTokens } from '../services/api.ts';
 import { useToast } from './ToastContext.tsx';
 
 interface AuthContextValue {
   user: User | null;
   token: string | null;
+  refreshToken: string | null;
   loading: boolean;
   addresses: Address[];
   login: (credentials: { email: string; password: string }) => Promise<void>;
@@ -23,13 +24,15 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('autoapex_token'));
+  const [refreshToken, setRefreshToken] = useState<string | null>(() => localStorage.getItem('autoapex_refresh_token'));
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(true);
   const { success, error } = useToast();
 
   const refreshUser = useCallback(async () => {
     const curToken = localStorage.getItem('autoapex_token');
-    if (!curToken) {
+    const curRefreshToken = localStorage.getItem('autoapex_refresh_token');
+    if (!curToken && !curRefreshToken) {
       setUser(null);
       setAddresses([]);
       setLoading(false);
@@ -40,10 +43,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const data = await api.auth.me();
       setUser(data.user);
       setAddresses(data.addresses || []);
+      setToken(localStorage.getItem('autoapex_token'));
+      setRefreshToken(localStorage.getItem('autoapex_refresh_token'));
     } catch (err) {
       console.warn('Session expired or invalid token:', err);
-      localStorage.removeItem('autoapex_token');
+      clearAuthTokens();
       setToken(null);
+      setRefreshToken(null);
       setUser(null);
       setAddresses([]);
     } finally {
@@ -58,8 +64,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (credentials: { email: string; password: string }) => {
     try {
       const res = await api.auth.login(credentials);
-      localStorage.setItem('autoapex_token', res.token);
+      setAuthTokens(res.token, res.refreshToken);
       setToken(res.token);
+      setRefreshToken(res.refreshToken);
       setUser(res.user);
       await refreshUser();
       success('Logged In', `Welcome back, ${res.user.name}!`);
@@ -72,8 +79,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (userData: { name: string; email: string; phone?: string; password: string }) => {
     try {
       const res = await api.auth.register(userData);
-      localStorage.setItem('autoapex_token', res.token);
+      setAuthTokens(res.token, res.refreshToken);
       setToken(res.token);
+      setRefreshToken(res.refreshToken);
       setUser(res.user);
       await refreshUser();
       success('Account Created', 'Welcome to AutoApex!');
@@ -84,8 +92,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    localStorage.removeItem('autoapex_token');
+    api.auth.logout().catch(() => {});
+    clearAuthTokens();
     setToken(null);
+    setRefreshToken(null);
     setUser(null);
     setAddresses([]);
     success('Logged Out', 'You have been signed out successfully.');
@@ -122,6 +132,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         token,
+        refreshToken,
         loading,
         addresses,
         login,

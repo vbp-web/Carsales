@@ -13,11 +13,39 @@ import {
 
 const BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
-function getAuthToken(): string | null {
+export function getAuthToken(): string | null {
   return localStorage.getItem('autoapex_token');
 }
 
-async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+export function getRefreshToken(): string | null {
+  return localStorage.getItem('autoapex_refresh_token');
+}
+
+export function setAuthTokens(token: string, refreshToken?: string): void {
+  localStorage.setItem('autoapex_token', token);
+  if (refreshToken) {
+    localStorage.setItem('autoapex_refresh_token', refreshToken);
+  }
+}
+
+export function clearAuthTokens(): void {
+  localStorage.removeItem('autoapex_token');
+  localStorage.removeItem('autoapex_refresh_token');
+}
+
+interface RequestOptions extends RequestInit {
+  _isRetry?: boolean;
+}
+
+let isRefreshing = false;
+let refreshSubscribers: ((newToken: string) => void)[] = [];
+
+function onTokenRefreshed(newToken: string) {
+  refreshSubscribers.forEach((cb) => cb(newToken));
+  refreshSubscribers = [];
+}
+
+async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
   const token = getAuthToken();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -33,7 +61,55 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     headers
   });
 
-  const data = await response.json();
+  const data = await response.json().catch(() => ({}));
+
+  // Handle 401 Unauthorized with automatic refresh token renewal
+  if (response.status === 401 && !options._isRetry && !endpoint.startsWith('/auth/')) {
+    const refreshToken = getRefreshToken();
+    if (refreshToken) {
+      if (!isRefreshing) {
+        isRefreshing = true;
+        try {
+          const refreshRes = await fetch(`${BASE_URL}/auth/refresh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refreshToken })
+          });
+          const refreshData = await refreshRes.json();
+          isRefreshing = false;
+
+          if (refreshRes.ok && refreshData.data?.token) {
+            setAuthTokens(refreshData.data.token, refreshData.data.refreshToken);
+            onTokenRefreshed(refreshData.data.token);
+          } else {
+            clearAuthTokens();
+            refreshSubscribers = [];
+            throw new Error(refreshData.message || 'Session expired. Please log in again.');
+          }
+        } catch (refreshErr) {
+          isRefreshing = false;
+          clearAuthTokens();
+          refreshSubscribers = [];
+          throw refreshErr;
+        }
+      }
+
+      // Retry original request once refreshed token is ready
+      return new Promise<T>((resolve, reject) => {
+        refreshSubscribers.push((newToken: string) => {
+          const retryOptions: RequestOptions = {
+            ...options,
+            _isRetry: true,
+            headers: {
+              ...(options.headers as Record<string, string>),
+              Authorization: `Bearer ${newToken}`
+            }
+          };
+          request<T>(endpoint, retryOptions).then(resolve).catch(reject);
+        });
+      });
+    }
+  }
 
   if (!response.ok) {
     throw new Error(data.message || 'Network request failed');
@@ -46,14 +122,23 @@ export const api = {
   // Auth
   auth: {
     login: (credentials: { email: string; password: string }) =>
-      request<{ token: string; user: User }>('/auth/login', {
+      request<{ token: string; refreshToken: string; user: User }>('/auth/login', {
         method: 'POST',
         body: JSON.stringify(credentials)
       }),
     register: (userData: { name: string; email: string; phone?: string; password: string }) =>
-      request<{ token: string; user: User }>('/auth/register', {
+      request<{ token: string; refreshToken: string; user: User }>('/auth/register', {
         method: 'POST',
         body: JSON.stringify(userData)
+      }),
+    refresh: (refreshToken: string) =>
+      request<{ token: string; refreshToken: string; user: User }>('/auth/refresh', {
+        method: 'POST',
+        body: JSON.stringify({ refreshToken })
+      }),
+    logout: () =>
+      request<{ message: string }>('/auth/logout', {
+        method: 'POST'
       }),
     me: () => request<{ user: User; addresses: Address[] }>('/auth/me'),
     forgotPassword: (email: string) =>
