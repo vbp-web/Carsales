@@ -299,15 +299,15 @@ const NotificationSchema = new Schema<Notification>(
 );
 
 // Export Mongoose Models with re-use check (prevents OverwriteModelError in hot reloads/serverless)
-export const UserModel = mongoose.models.User || mongoose.model<User>('User', UserSchema);
-export const ProductModel = mongoose.models.Product || mongoose.model<Product>('Product', ProductSchema);
-export const CarBrandModel = mongoose.models.CarBrand || mongoose.model<CarBrand>('CarBrand', CarBrandSchema);
-export const CarModelModel = mongoose.models.CarModel || mongoose.model<CarModel>('CarModel', CarModelSchema);
-export const CategoryModel = mongoose.models.Category || mongoose.model<Category>('Category', CategorySchema);
-export const AddressModel = mongoose.models.Address || mongoose.model<Address>('Address', AddressSchema);
-export const CartItemModel = mongoose.models.CartItem || mongoose.model<CartItem>('CartItem', CartItemSchema);
-export const WishlistModel = mongoose.models.Wishlist || mongoose.model<WishlistDoc>('Wishlist', WishlistSchema);
-export const OrderModel = mongoose.models.Order || mongoose.model<Order>('Order', OrderSchema);
-export const ReviewModel = mongoose.models.Review || mongoose.model<Review>('Review', ReviewSchema);
-export const CouponModel = mongoose.models.Coupon || mongoose.model<Coupon>('Coupon', CouponSchema);
-export const NotificationModel = mongoose.models.Notification || mongoose.model<Notification>('Notification', NotificationSchema);
+export const UserModel: mongoose.Model<User> = (mongoose.models.User as mongoose.Model<User>) || mongoose.model<User>('User', UserSchema);
+export const ProductModel: mongoose.Model<Product> = (mongoose.models.Product as mongoose.Model<Product>) || mongoose.model<Product>('Product', ProductSchema);
+export const CarBrandModel: mongoose.Model<CarBrand> = (mongoose.models.CarBrand as mongoose.Model<CarBrand>) || mongoose.model<CarBrand>('CarBrand', CarBrandSchema);
+export const CarModelModel: mongoose.Model<CarModel> = (mongoose.models.CarModel as mongoose.Model<CarModel>) || mongoose.model<CarModel>('CarModel', CarModelSchema);
+export const CategoryModel: mongoose.Model<Category> = (mongoose.models.Category as mongoose.Model<Category>) || mongoose.model<Category>('Category', CategorySchema);
+export const AddressModel: mongoose.Model<Address> = (mongoose.models.Address as mongoose.Model<Address>) || mongoose.model<Address>('Address', AddressSchema);
+export const CartItemModel: mongoose.Model<CartItem> = (mongoose.models.CartItem as mongoose.Model<CartItem>) || mongoose.model<CartItem>('CartItem', CartItemSchema);
+export const WishlistModel: mongoose.Model<WishlistDoc> = (mongoose.models.Wishlist as mongoose.Model<WishlistDoc>) || mongoose.model<WishlistDoc>('Wishlist', WishlistSchema);
+export const OrderModel: mongoose.Model<Order> = (mongoose.models.Order as mongoose.Model<Order>) || mongoose.model<Order>('Order', OrderSchema);
+export const ReviewModel: mongoose.Model<Review> = (mongoose.models.Review as mongoose.Model<Review>) || mongoose.model<Review>('Review', ReviewSchema);
+export const CouponModel: mongoose.Model<Coupon> = (mongoose.models.Coupon as mongoose.Model<Coupon>) || mongoose.model<Coupon>('Coupon', CouponSchema);
+export const NotificationModel: mongoose.Model<Notification> = (mongoose.models.Notification as mongoose.Model<Notification>) || mongoose.model<Notification>('Notification', NotificationSchema);

@@ -288,8 +288,8 @@ class DatabaseStore {
 
     await WishlistModel.findOneAndUpdate(
       { userId: 'user_customer_demo' },
-      { userId: 'user_customer_demo', productIds: ['prod_4k_dual_dashcam_pro', 'prod_nappa_leather_seat_creta'] },
-      { upsert: true }
+      { $set: { userId: 'user_customer_demo', productIds: ['prod_4k_dual_dashcam_pro', 'prod_nappa_leather_seat_creta'] } },
+      { upsert: true, new: true }
     );
   }
 
@@ -508,7 +508,7 @@ class DatabaseStore {
     if (idx === -1) return undefined;
     this.data.users[idx] = { ...this.data.users[idx], ...updates };
     this.save();
-    this.persistAsync('updateUser', () => UserModel.findOneAndUpdate({ id }, { $set: updates }));
+    this.persistAsync('updateUser', () => UserModel.findOneAndUpdate({ id }, { $set: updates }, { new: true }));
     return this.data.users[idx];
   }
 
@@ -550,7 +550,7 @@ class DatabaseStore {
     this.data.addresses[idx] = { ...this.data.addresses[idx], ...updates };
     this.save();
     this.persistAsync('updateAddress', () =>
-      AddressModel.findOneAndUpdate({ id, userId }, { $set: updates })
+      AddressModel.findOneAndUpdate({ id, userId }, { $set: updates }, { new: true })
     );
     return this.data.addresses[idx];
   }
@@ -714,7 +714,7 @@ class DatabaseStore {
     if (idx === -1) return undefined;
     this.data.products[idx] = { ...this.data.products[idx], ...updates, updatedAt: new Date().toISOString() };
     this.save();
-    this.persistAsync('updateProduct', () => ProductModel.findOneAndUpdate({ id }, { $set: updates }));
+    this.persistAsync('updateProduct', () => ProductModel.findOneAndUpdate({ id }, { $set: updates }, { new: true }));
     return this.data.products[idx];
   }
 
@@ -790,7 +790,7 @@ class DatabaseStore {
     if (idx === -1) return undefined;
     this.data.categories[idx] = { ...this.data.categories[idx], ...updates };
     this.save();
-    this.persistAsync('updateCategory', () => CategoryModel.findOneAndUpdate({ id }, { $set: updates }));
+    this.persistAsync('updateCategory', () => CategoryModel.findOneAndUpdate({ id }, { $set: updates }, { new: true }));
     return this.data.categories[idx];
   }
 
@@ -828,7 +828,7 @@ class DatabaseStore {
       }
       const updatedItem = cart[existingIdx];
       this.persistAsync('updateCartItem', () =>
-        CartItemModel.findOneAndUpdate({ id: updatedItem.id }, { $set: updatedItem }, { upsert: true })
+        CartItemModel.findOneAndUpdate({ id: updatedItem.id }, { $set: updatedItem }, { upsert: true, new: true })
       );
     } else {
       const newItem: CartItem = {
@@ -858,7 +858,7 @@ class DatabaseStore {
       } else {
         item.quantity = quantity;
         this.persistAsync('updateCartItemQty', () =>
-          CartItemModel.findOneAndUpdate({ id: item.id }, { $set: { quantity } })
+          CartItemModel.findOneAndUpdate({ id: item.id }, { $set: { quantity } }, { new: true })
         );
       }
       this.save();
@@ -906,7 +906,7 @@ class DatabaseStore {
     }
     this.save();
     this.persistAsync('toggleWishlist', () =>
-      WishlistModel.findOneAndUpdate({ userId }, { productIds: list }, { upsert: true })
+      WishlistModel.findOneAndUpdate({ userId }, { $set: { productIds: list } }, { upsert: true, new: true })
     );
     return { inWishlist, wishlist: list };
   }
@@ -1047,7 +1047,8 @@ class DatabaseStore {
         this.persistAsync('updateProductStock', () =>
           ProductModel.findOneAndUpdate(
             { id: item.productId },
-            { $set: { stock: prod.stock, stockStatus: prod.stockStatus } }
+            { $set: { stock: prod.stock, stockStatus: prod.stockStatus } },
+            { new: true }
           )
         );
       }
@@ -1059,7 +1060,7 @@ class DatabaseStore {
       if (coup) {
         coup.usedCount += 1;
         this.persistAsync('incrementCouponUsage', () =>
-          CouponModel.findOneAndUpdate({ code: coup.code }, { $inc: { usedCount: 1 } })
+          CouponModel.findOneAndUpdate({ code: coup.code }, { $inc: { usedCount: 1 } }, { new: true })
         );
       }
     }
@@ -1098,7 +1099,8 @@ class DatabaseStore {
             updatedAt: order.updatedAt,
             statusTimeline: order.statusTimeline
           }
-        }
+        },
+        { new: true }
       )
     );
     return order;
@@ -1160,7 +1162,8 @@ class DatabaseStore {
             updatedAt: order.updatedAt,
             statusTimeline: order.statusTimeline
           }
-        }
+        },
+        { new: true }
       )
     );
     return order;
@@ -1193,7 +1196,8 @@ class DatabaseStore {
             updatedAt: order.updatedAt,
             statusTimeline: order.statusTimeline
           }
-        }
+        },
+        { new: true }
       )
     );
     return order;
@@ -1224,7 +1228,8 @@ class DatabaseStore {
       this.persistAsync('updateProductRating', () =>
         ProductModel.findOneAndUpdate(
           { id: prod.id },
-          { $set: { rating: prod.rating, reviewCount: prod.reviewCount } }
+          { $set: { rating: prod.rating, reviewCount: prod.reviewCount } },
+          { new: true }
         )
       );
     }
@@ -1244,7 +1249,7 @@ class DatabaseStore {
     rev.status = status;
     this.save();
     this.persistAsync('updateReviewStatus', () =>
-      ReviewModel.findOneAndUpdate({ id }, { $set: { status } })
+      ReviewModel.findOneAndUpdate({ id }, { $set: { status } }, { new: true })
     );
     return rev;
   }
